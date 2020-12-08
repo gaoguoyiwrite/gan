@@ -1,3 +1,0 @@
-var gaoguo_yi = {
-
-}
