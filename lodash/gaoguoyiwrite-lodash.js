@@ -48,7 +48,7 @@ var gaoguoyiwrite = {
   },
 
   drop: function (ary, n) {
-    if (!n) {
+    if (!n && !(n === 0)) {
       n = 1
     }
     if (ary.length < n) {
@@ -86,12 +86,11 @@ var gaoguoyiwrite = {
     return ary
   },
 
-  // findIndex: function (ary, val) {
-  //     var a = typeof(val)
-  //   for (var i = 0; i < ary.length; i++){
-  //     if(a=)
-  //   }
-  // },
+  findIndex: function (ary, val) {
+    for (var i = 0; i < ary.length; i++) {
+
+    }
+  },
 
 
   // findLastIndex: function () {
@@ -115,7 +114,25 @@ var gaoguoyiwrite = {
   },
 
 
-  flattenDepth: function (array) {
+
+  flattenDeep: function (array) {
+    var newArray = []
+    var fd = function (array) {
+      for (var i = 0; i < array.length; i++) {
+
+        var a = typeof (array[i])
+        if (a !== "object") {
+          newArray.push(array[i])
+        } else {
+          fd(array[i])
+        }
+      }
+      return newArray
+    }
+    return fd(array)
+  },
+
+  flattenDepth: function (array, n) {
     var newArray = []
     var fd = function (array) {
       for (var i = 0; i < array.length; i++) {
@@ -200,8 +217,27 @@ var gaoguoyiwrite = {
 
   },
 
-  filter: function (array, test) {
+  // filter: function (array, test) {
 
+  // },
+
+  toArray: function (st) {
+    var resault = []
+    var a = typeof (st)
+    if (a == "number") {
+      resault = []
+    } else if (a == null) {
+      resault = []
+    } else if (a == "string") {
+      for (var i = 0; i < st.length; i++) {
+        resault.push(st[i])
+      }
+    } else if (a == "object") {
+      for (var key in st) {
+        resault.push(st[key])
+      }
+    }
+    return resault
   },
 
 
@@ -218,9 +254,19 @@ var gaoguoyiwrite = {
     return max
   },
 
-  // maxBy: function (array) {
-
-  // }
+  maxBy: function (array, key) {
+    var num = 0
+    var max = array[0]
+    for (var i = 1; i < array.length; i++) {
+      if (key in array[i]) {
+        if (array[i][key] > max) {
+          max = array[i][key]
+          num = i
+        }
+      }
+    }
+    return array[num]
+  },
   min: function (arr) {
     if (ary.length === 0) {
       return undefined
@@ -233,9 +279,24 @@ var gaoguoyiwrite = {
     }
     return min
   },
-  // minby: function () {
 
-  // }
+
+  minBy: function (array, key) {
+    var num = 0
+    var min = array[0]
+    for (var i = 1; i < array.length; i++) {
+      if (key in array[i]) {
+        if (array[i][key] < min) {
+          min = array[i][key]
+          num = i
+        }
+      }
+    }
+    return array[num]
+
+  },
+
+
   sum: function (ary) {
     var sum = 0
     for (var i = 0; i < ary.length; i++) {
@@ -243,8 +304,16 @@ var gaoguoyiwrite = {
     }
     return sum
   },
-  // sumby: function () {
 
-  // }
+
+  sumBy: function (array, key) {
+    var sum = 0
+    for (var i = 0; i < array.length; i++) {
+      if (key in array[i]) {
+        sum += array[i][key]
+      }
+    }
+    return sum
+  }
 
 }
