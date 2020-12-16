@@ -19,13 +19,13 @@ var gaoguoyiwrite = {
     return resault
   },
 
-  differenceBy: function (ary, ary2, val) {
-    var res = []
-    for (var i = 0; i < ary.length; i++) {
-      if (!(ary[i] in ar))
-    }
+  // differenceBy: function (ary, ary2, val) {
+  //   var res = []
+  //   for (var i = 0; i < ary.length; i++) {
+  //     if (!(ary[i] in ar))
+  //   }
 
-  },
+  // },
   join: function (ary, string) {
     var str = ""
     for (var i = 0; i < ary.length - 1; i++) {
@@ -90,7 +90,7 @@ var gaoguoyiwrite = {
 
   },
 
-  dropWhile: function ()
+  // dropWhile: function ()
 
   fill: function (ary, str, start, end) {
     if (!start && !(start === 0)) {
