@@ -9,27 +9,27 @@ var gaoguoyiwrite = {
     return resault
   },
 
-  difference: function (array, [values]) {
+  difference: function (array, values) {
     var resault = []
     for (var i = 0; i < array.length; i++) {
-      if (!(array[i] in [values])) {
+      if (!values.includes(array[i])) {
         resault.push(array[i])
       }
     }
     return resault
   },
 
-  // differenceBy: function (ary, ary2, val) {
-  //   var res = []
-  //   for (var i = 0; i < ary.length; i++) {
-  //     if (!(ary[i] in ar))
-  //   }
+  differenceBy: function (ary, ary2, val) {
+    var res = []
+    for (var i = 0; i < ary.length; i++) {
+      if (!(ary[i] in ar))
+    }
 
-  // },
+  },
   join: function (ary, string) {
     var str = ""
     for (var i = 0; i < ary.length - 1; i++) {
-      str += ary[i] + string
+      str += ary[i] + String(string)
     }
     return str + ary[ary.length - 1]
   },
@@ -38,7 +38,7 @@ var gaoguoyiwrite = {
     return ary[ary.length - 1]
   },
 
-  lastIndextOf: function (ary, value, start) {
+  lastindextOf: function (ary, value, start) {
     if (!start) {
       start = ary.length
     }
@@ -48,6 +48,40 @@ var gaoguoyiwrite = {
     }
     return i
   },
+
+  nth: function (ary, n) {
+    if (Math.abs(n) > ary.length) {
+      return undefined
+    }
+    if (n > 0) {
+      return ary[n]
+    } else {
+      return ary[ary.length + n]
+    }
+
+  },
+  pull: function (ary, ...nums) {
+    for (var i = 0; i < nums.length; i++) {
+      for (var j = 0; j < ary.length; j++) {
+        if (nums[i] === ary[j]) {
+          ary.splice(j, 1)
+        }
+      }
+    }
+    return ary
+  },
+
+  pullAll: function (ary, nums) {
+    for (var i = 0; i < nums.length; i++) {
+      for (var j = 0; j < ary.length; j++) {
+        if (nums[i] === ary[j]) {
+          ary.splice(j, 1)
+        }
+      }
+    }
+    return ary
+  },
+
 
 
   chunk: function (ary, size) {
@@ -106,9 +140,7 @@ var gaoguoyiwrite = {
   },
 
   findIndex: function (ary, val) {
-    for (var i = 0; i < ary.length; i++) {
 
-    }
   },
 
 
@@ -200,6 +232,22 @@ var gaoguoyiwrite = {
     return arr
   },
 
+  intersection: function (...ary) {
+    var result = []
+    for (var i = 0; i < ary[0].length; i++) {
+      for (var j = 1; j < ary.length; j++) {
+        if (!ary[j].includes(ary[0][i])) {
+          break
+        }
+      }
+      if (j === ary.length) {
+        result.push(ary[0][i])
+      }
+
+    }
+    return result
+  },
+
   reverse: function (array) {
 
     var i = 0
@@ -228,9 +276,24 @@ var gaoguoyiwrite = {
     return left
   },
 
-  every: function (collection,) {
+  union: function (...ary) {
+    var res = []
+    for (var i = 0; i < ary.length; i++) {
+      for (var j = 0; j < ary[i].length; j++) {
+        if (!res.includes(ary[i][j])) {
+          res.push(ary[i][j])
+        }
+      }
+    }
 
+    return res
   },
+
+
+
+  // every: function (collection,) {
+
+  // },
 
   // filter: function (array, test) {
 
