@@ -9,6 +9,23 @@ var gaoguoyiwrite = {
     return resault
   },
 
+  difference: function (array, [values]) {
+    var resault = []
+    for (var i = 0; i < array.length; i++) {
+      if (!(array[i] in [values])) {
+        resault.push(array[i])
+      }
+    }
+    return resault
+  },
+
+  differenceBy: function (ary, ary2, val) {
+    var res = []
+    for (var i = 0; i < ary.length; i++) {
+      if (!(ary[i] in ar))
+    }
+
+  },
   join: function (ary, string) {
     var str = ""
     for (var i = 0; i < ary.length - 1; i++) {
@@ -73,6 +90,8 @@ var gaoguoyiwrite = {
 
   },
 
+  dropWhile: function ()
+
   fill: function (ary, str, start, end) {
     if (!start && !(start === 0)) {
       start = 0
@@ -132,30 +151,26 @@ var gaoguoyiwrite = {
     return fd(array)
   },
 
-  flattenDepth: function (array, n) {
-    var newArray = []
-    var fd = function (array) {
-      for (var i = 0; i < array.length; i++) {
-
-        var a = typeof (array[i])
-        if (a !== "object") {
-          newArray.push(array[i])
-        } else {
-          fd(array[i])
-        }
-      }
-      return newArray
+  flattenDepth: function (array, depth = 1) {
+    if (depth == 0) {
+      return array.slice()
     }
-    return fd(array)
+    var result = []
+    for (var i = 0; i < array.length; i++) {
+      if (Array.isArray(array[i])) {
+        result.push(...flattenDepth(array[i], depth - 1))
+      } else {
+        result.push(array[i])
+      }
+    }
+    return result
   },
 
 
   fromPairs: function (array) {
     var pairs = {}
     for (var i = 0; i < array.length; i++) {
-      for (var j = 0; j < array[i].length; j++) {
-        pairs[array[i][0]] = array[i][i]
-      }
+      pairs[array[i][0]] = array[i][1]
     }
     return pairs
   },
@@ -254,10 +269,11 @@ var gaoguoyiwrite = {
     return max
   },
 
-  maxBy: function (array, key) {
+  maxBy: function (array, predicate) {
     var num = 0
     var max = array[0]
     for (var i = 1; i < array.length; i++) {
+      var key = predicate(array[i], i, array)
       if (key in array[i]) {
         if (array[i][key] > max) {
           max = array[i][key]
@@ -267,14 +283,15 @@ var gaoguoyiwrite = {
     }
     return array[num]
   },
+
   min: function (arr) {
-    if (ary.length === 0) {
+    if (arr.length == 0) {
       return undefined
     }
-    var min = ary[0]
-    for (var i = 1; i < ary.length; i++) {
-      if (ary[i] < mim) {
-        min = ary[i]
+    var min = arr[0]
+    for (var i = 1; i < arr.length; i++) {
+      if (arr[i] < mim) {
+        min = arr[i]
       }
     }
     return min
@@ -306,14 +323,34 @@ var gaoguoyiwrite = {
   },
 
 
-  sumBy: function (array, key) {
+  sumBy: function (array, predicate) {
     var sum = 0
     for (var i = 0; i < array.length; i++) {
-      if (key in array[i]) {
-        sum += array[i][key]
-      }
+      sum += predicate(array[i], i, array)
     }
     return sum
-  }
+  },
+
+  mapValues: function (obj, mapper) {
+    var resault = {}
+    for (var kry in obj) {
+      var val = obj[key]
+      result[mapper(val, key, obj)] = val
+    }
+    return result
+  },
+
+  groupBy: function (array, predicate) {
+    var result = {}
+    for (var i = 0; i < array.length; i++) {
+      var key = predicate(array[i], i, array)
+      if (!Array.isArray(result[key])) {
+        result[key] = []
+      }
+      result[key].push(array[i])
+    }
+    return result
+  },
+
 
 }
