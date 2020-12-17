@@ -19,13 +19,54 @@ var gaoguoyiwrite = {
     return resault
   },
 
-  differenceBy: function (ary, ary2, val) {
-    var res = []
-    for (var i = 0; i < ary.length; i++) {
-      if (!(ary[i] in ar))
+  differenceBy: function (ary, ...vals,) {
+    var result = []
+
+    var key = vals[vals.length - 1]
+    var type = Object.prototype.toString.call(key)
+    if (type == '[object String]') {
+      for (var key in ary) {
+        if (!vals.includes(ary[key])) {
+          result.push({ key: vals[key] })
+        }
+      }
     }
+    if (type == '[object Array]') {
+      for (var i = 0; i < ary.length; i++) {
+        if (!vals.includes(ary[i])) {
+          result.push(ary[i])
+        }
+      }
+    }
+    if (type == '[object Function]') {
+      var compare = []
+      for (var i = 0; i < vals.length - 1; i++) {
+        compare.push(key(vals[i]))
+      }
+      for (var j = 0; j < ary.length; i++) {
+        if (!compare.includes(key(ary[i]))) {
+          result.push(ary[i])
+        }
+      }
+    }
+    return result
 
   },
+
+
+  differenceWith: function (ary, values, comparator) {
+    var res = []
+    for (var i = 0; i < ary.length; i++) {
+      for (var j = 0; j < values.length; j++) {
+        if (!comparator(ary[i], values[j])) {
+          res.push(ary[i])
+        }
+      }
+    }
+    return res
+  },
+
+
   join: function (ary, string) {
     var str = ""
     for (var i = 0; i < ary.length - 1; i++) {
