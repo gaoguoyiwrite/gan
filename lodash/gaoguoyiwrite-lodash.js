@@ -1,4 +1,6 @@
 var gaoguoyiwrite = {
+
+
   compact: function (ary) {
     var resault = []
     for (var i = 0; i < ary.length; i++) {
@@ -18,41 +20,6 @@ var gaoguoyiwrite = {
     }
     return resault
   },
-
-  differenceBy: function (ary, ...vals,) {
-    var result = []
-
-    var key = vals[vals.length - 1]
-    var type = Object.prototype.toString.call(key)
-    if (type == '[object String]') {
-      for (var key in ary) {
-        if (!vals.includes(ary[key])) {
-          result.push({ key: vals[key] })
-        }
-      }
-    }
-    if (type == '[object Array]') {
-      for (var i = 0; i < ary.length; i++) {
-        if (!vals.includes(ary[i])) {
-          result.push(ary[i])
-        }
-      }
-    }
-    if (type == '[object Function]') {
-      var compare = []
-      for (var i = 0; i < vals.length - 1; i++) {
-        compare.push(key(vals[i]))
-      }
-      for (var j = 0; j < ary.length; i++) {
-        if (!compare.includes(key(ary[i]))) {
-          result.push(ary[i])
-        }
-      }
-    }
-    return result
-
-  },
-
 
   differenceWith: function (ary, values, comparator) {
     var res = []
@@ -165,7 +132,6 @@ var gaoguoyiwrite = {
 
   },
 
-  // dropWhile: function ()
 
   fill: function (ary, str, start, end) {
     if (!start && !(start === 0)) {
@@ -184,10 +150,6 @@ var gaoguoyiwrite = {
 
   },
 
-
-  // findLastIndex: function () {
-
-  // }
 
   flatten: function (array) {
     var newArray = []
@@ -330,15 +292,6 @@ var gaoguoyiwrite = {
     return res
   },
 
-
-
-  // every: function (collection,) {
-
-  // },
-
-  // filter: function (array, test) {
-
-  // },
 
   toArray: function (st) {
     var resault = []
