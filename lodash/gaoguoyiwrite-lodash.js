@@ -11,14 +11,18 @@ var gaoguoyiwrite = {
     return resault
   },
 
-  difference: function (array, values) {
-    var resault = []
+  difference: function difference(array, ...args) {
+    var result = []
+    var values = args[0]
+    for (var j = 1; j < args.length; j++) {
+      values = values.concat(args[j])
+    }
     for (var i = 0; i < array.length; i++) {
       if (!values.includes(array[i])) {
-        resault.push(array[i])
+        result.push(array[i])
       }
     }
-    return resault
+    return result
   },
 
   differenceWith: function (ary, values, comparator) {
@@ -46,7 +50,7 @@ var gaoguoyiwrite = {
     return ary[ary.length - 1]
   },
 
-  lastindextOf: function (ary, value, start) {
+  lastindextOf: function lastindextOf(ary, value, start) {
     if (!start) {
       start = ary.length
     }
@@ -132,6 +136,68 @@ var gaoguoyiwrite = {
 
   },
 
+  dropRightWhile: function dropRightWhile(ary, predicate) {
+    var type = Object.prototype.toString.call(predicate)
+    var res = []
+    for (var i = 0; i < ary.length; i++) {
+      if (type === '[object Function]') {
+        if (!predicate(ary[i])) {
+          res.push(ary[i])
+        }
+      }
+      if (type === '[object String]') {
+        if (predicate in ary[i]) {
+          res.push(ary[i])
+        }
+      }
+      if (type === '[object Object]') {
+        for (var key in ary[i]) {
+          if (predicate[key] !== ary[i][key]) {
+            res.push(ary[i])
+            break
+          }
+        }
+      }
+      if (type === '[object Array]') {
+        if (ary[i][predicate[0]] !== predicate[1]) {
+          res.push(ary[i])
+        }
+      }
+    }
+    return res
+  },
+
+  dropWhile: function dropWhile(ary, predicate) {
+    var type = Object.prototype.toString.call(predicate)
+    var res = []
+    for (var i = 0; i < ary.length; i++) {
+      if (type === '[object Function]') {
+        if (!predicate(ary[i])) {
+          res.push(ary[i])
+        }
+      }
+      if (type === '[object String]') {
+        if (predicate in ary[i]) {
+          res.push(ary[i])
+        }
+      }
+      if (type === '[object Object]') {
+        for (var key in ary[i]) {
+          if (predicate[key] !== ary[i][key]) {
+            res.push(ary[i])
+            break
+          }
+        }
+      }
+      if (type === '[object Array]') {
+        if (ary[i][predicate[0]] !== predicate[1]) {
+          res.push(ary[i])
+        }
+      }
+    }
+    return res
+  },
+
 
   fill: function (ary, str, start, end) {
     if (!start && !(start === 0)) {
@@ -146,8 +212,33 @@ var gaoguoyiwrite = {
     return ary
   },
 
-  findIndex: function (ary, val) {
+  findIndex: function (ary, predicate) {
+    var type = Object.prototype.toString.call(predicate)
+    for (var i = 0; i < ary.length; i++) {
+      if (type === '[object Function]') {
+        if (predicate(ary[i])) {
+          return i
+        }
+      }
+      if (type === '[object String]') {
+        if (predicate in ary[i]) {
 
+        }
+      }
+      if (type === '[object Object]') {
+        for (var key in ary[i]) {
+          if (predicate[key] !== ary[i][key]) {
+            res.push(ary[i])
+            break
+          }
+        }
+      }
+      if (type === '[object Array]') {
+        if (ary[i][predicate[0]] !== predicate[1]) {
+          res.push(ary[i])
+        }
+      }
+    }
   },
 
 
@@ -186,7 +277,7 @@ var gaoguoyiwrite = {
     return fd(array)
   },
 
-  flattenDepth: function (array, depth = 1) {
+  flattenDepth: function flattenDepth(array, depth = 1) {
     if (depth == 0) {
       return array.slice()
     }
@@ -409,5 +500,122 @@ var gaoguoyiwrite = {
     return result
   },
 
+  sortedIndexOf: function sortedIndexOf(ary, num) {
+    for (var i = 0; i < ary.length; i++) {
+      if (ary[i] === num) {
+        return i
+      }
+    }
+  },
 
+  sortedLastIndex: function sortedLastIndex(array, value) {
+    for (var i = array.length - 1; i >= 0; i--) {
+      if (array[i] === value) {
+        return i + 1
+      }
+    }
+  },
+  sortedLastIndexOf: function sortedLastIndexOf(array, value) {
+    for (var i = array.length - 1; i >= 0; i--) {
+      if (array[i] === value) {
+        return i
+      }
+    }
+  },
+  sortedUniq: function sortedUniq(array) {
+    var res = []
+    for (var i = 0; i < array.length; i++) {
+      if (!res.includes(array[i])) {
+        res.push(array[i])
+      }
+    }
+    return res
+  },
+
+  tail: function tail(ary) {
+    ary.splice(0, 1)
+    return ary
+  },
+  take: function take(ary, n = 1) {
+    if (n > ary.length) {
+      return ary
+    }
+    return ary.slice(0, n)
+  },
+  takeRight: function takeRight(ary, n = 1) {
+    if (n > ary.length) {
+      return ary
+    }
+    if (n === 0) {
+      return []
+    }
+    return ary.slice(-n)
+  },
+
+  uniq: function uniq(ary) {
+    var res = []
+    ary.forEach(it => {
+      if (!res.includes(it)) {
+        res.push(it)
+      }
+    });
+    return res
+  },
+
+  without: function without(ary, ...values) {
+    var res = []
+    for (var i = 0; i < ary.length; i++) {
+      if (!values.includes(ary[i])) {
+        res.push(ary[i])
+      }
+    }
+    return res
+  },
+
+  xor: function xor(...ary) {
+    var map = {}
+    for (var i = 0; i < ary.length; i++) {
+      for (var j = 0; j < ary[i].length; j++) {
+        if (ary[i][j] in map) {
+          map[ary[i][j]]++
+        } else {
+          map[ary[i][j]] = 1
+        }
+      }
+    }
+    var res = []
+    for (var key in map) {
+      if (map[key] === 1) {
+        res.push(Number(key))
+      }
+    }
+    return res
+  },
+
+  zip: function zip(...arrays) {
+    var res = []
+    for (var i = 0; i < arrays[0].length; i++) {
+      res.push([])
+    }
+    for (var i = 0; i < arrays.length; i++) {
+      for (var j = 0; j < arrays[i].length; j++) {
+        res[j].push(arrays[i][j])
+      }
+    }
+    return res
+  },
+
+  // zipWith: function zipWith(...arr) {
+  //   var f = arr.pop()
+
+  // },
+
+  isMatch: function isMatch(src, obj) {
+    for (var key in obj) {
+      if (src[key] !== obj[key]) {
+        return false
+      }
+    }
+    return true
+  },
 }
