@@ -472,7 +472,7 @@ var gaoguoyiwrite = {
     for (var i = 0; i < arr1.length; i++) {
       for (var j = 0; j < arr2.length; j++) {
         if (iteratee(arr1[i], arr2[j])) {
-          res.push(arr1[]i)
+          res.push(arr1[i])
         }
       }
     }
@@ -507,9 +507,7 @@ var gaoguoyiwrite = {
     return left
   },
 
-  sortedIndexBy: function sortedIndexBy(array, value, iteratee) {
 
-  },
 
   union: function (...ary) {
     var res = []
@@ -772,12 +770,26 @@ var gaoguoyiwrite = {
     return res
   },
 
-  isMatch: function isMatch(src, obj) {
-    for (var key in obj) {
-      if (src[key] !== obj[key]) {
-        return false
+  countBy: function countBy(collection, iteratee) {
+    var map = {}
+    if (typeof (iteratee) === 'function') {
+      for (var i = 0; i < collection.length; i++) {
+        if (iteratee(collection[i]) in map) {
+          map[iteratee(collection[i])]++
+        } else {
+          map[iteratee(collection[i])] = 1
+        }
       }
     }
-    return true
+    if (typeof (iteratee) === 'string') {
+      for (var i = 0; i < collection.length; i++) {
+        if (collection[i].iteratee in map) {
+          map[collection[i].iteratee]++
+        } else {
+          map[collection[i].iteratee] = 1
+        }
+      }
+    }
+    return map
   },
 }
