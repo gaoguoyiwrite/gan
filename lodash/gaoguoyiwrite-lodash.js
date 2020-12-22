@@ -491,23 +491,27 @@ var gaoguoyiwrite = {
     return array
   },
 
-  sortedIndex: function (array, value) {
-    var left = 0
-    var right = array.length - 1
-    while (left <= right) {
-      var mid = Math.ceil((left + right) / 2)
-      if (array[mid] === value || (array[mid] > value && array[mid - 1] < value)) {
-        return mid
-      } else if (array[mid] > value) {
-        left = mid + 1
-      } else {
-        right = mid = 1
+  sortedIndex: function sortedIndex(array, value) {
+    for (var i = 0; i < array.length; i++) {
+      if (array[i] >= value) {
+        return i
       }
     }
-    return left
+    return array.length
   },
 
-
+  sortedIndexBy: function sortedIndexBy(arr, val, iteratee) {
+    if (typeof (iteratee) == "function") {
+      var arr1 = arr.map(it => iteratee(it))
+      var val1 = iteratee(val)
+      return sortedIndex(arr1, val1)
+    }
+    if (typeof (iteratee) == 'string') {
+      arr1 = arr.map(it => it[iteratee])
+      val1 = val[iteratee]
+      return sortedIndex(arr1, val1)
+    }
+  },
 
   union: function (...ary) {
     var res = []
@@ -521,9 +525,58 @@ var gaoguoyiwrite = {
 
     return res
   },
+  unionBy: function unionBy(...ary) {
+    var iteratee = ary.pop()
+    var map = {}
+    var res = []
+    var arr = []
+    for (var i = 0; i < ary.length; i++) {
+      arr = arr.comcat(ary[i])
+    }
+
+    if (typeof (iteratee) == "function") {
+      for (var i = 0; i < arr.length; i++) {
+        var item = iteratee(arr[i])
+        if (!(item in map)) {
+          map[item] = arr[i]
+        }
+      }
+    }
+    if (typeof (iteratee) == 'string') {
+      for (var i = 0; i < arr.length; i++) {
+        var item = arr[i][iteratee]
+        if (!(item in map)) {
+          map[item] = arr[i]
+        }
+      }
+    }
+    for (var key in map) {
+      res.push(map[key])
+    }
+    return res
+  },
+
+  unionWith: function unionWith(...ary) {
+    var iteratee = ary.pop()
+    var map = {}
+    var res = []
+    var arr = []
+    for (var i = 0; i < ary.length; i++) {
+      arr = arr.comcat(ary[i])
+    }
+    var res = arr[0]
+    for (var i = 1; i < arr1.length; i++) {
+      for (var j = 0; j < res.length; j++) {
+        if (iteratee(arr1[i], arr2[j])) {
+          res.push(arr1[i])
+        }
+      }
+    }
+    return res
+  },
 
 
-  toArray: function (st) {
+  toArray: function toArray(st) {
     var resault = []
     var a = typeof (st)
     if (a == "number") {
@@ -541,6 +594,8 @@ var gaoguoyiwrite = {
     }
     return resault
   },
+
+
 
 
   max: function (ary) {
@@ -571,13 +626,13 @@ var gaoguoyiwrite = {
     return array[num]
   },
 
-  min: function (arr) {
+  min: function min(arr) {
     if (arr.length == 0) {
       return undefined
     }
     var min = arr[0]
     for (var i = 1; i < arr.length; i++) {
-      if (arr[i] < mim) {
+      if (arr[i] < min) {
         min = arr[i]
       }
     }
@@ -654,6 +709,21 @@ var gaoguoyiwrite = {
       }
     }
   },
+
+  sortedLastIndexBy: function sortedLastIndexBy(arr, val, iteratee) {
+    if (typeof (iteratee) == "function") {
+      var arr1 = arr.map(it => iteratee(it))
+      var val1 = iteratee(val)
+      return sortedLastIndex(arr1, val1)
+    }
+    if (typeof (iteratee) == 'string') {
+      arr1 = arr.map(it => it[iteratee])
+      val1 = val[iteratee]
+      return sortedLastIndex(arr1, val1)
+    }
+  },
+
+
   sortedLastIndexOf: function sortedLastIndexOf(array, value) {
     for (var i = array.length - 1; i >= 0; i--) {
       if (array[i] === value) {
@@ -667,6 +737,19 @@ var gaoguoyiwrite = {
       if (!res.includes(array[i])) {
         res.push(array[i])
       }
+    }
+    return res
+  },
+  sortedUniqBy: function sortedUniqBy(array, iteratee) {
+    var map = {}
+    var res = []
+    for (var i = 0; i < array.length; i++) {
+      if (!(iteratee(array[i]) in map)) {
+        map[iteratee(array[i])] = array[i]
+      }
+    }
+    for (var key in map) {
+      res.push(map[key])
     }
     return res
   },
@@ -690,6 +773,73 @@ var gaoguoyiwrite = {
     }
     return ary.slice(-n)
   },
+  takeRightWhile: function takeRightWhile(ary, predicate) {
+    var type = Object.prototype.toString.call(predicate)
+    var res = []
+    for (var i = ary.length - 1; i >= 0; i--) {
+      if (type === '[object Function]') {
+        if (predicate(ary[i])) {
+          res.push(ary[i])
+        }
+      }
+      if (type === '[object String]') {
+        if (!(predicate in ary[i])) {
+          res.push(ary[i])
+        }
+      }
+      if (type === '[object Object]') {
+        var isSame = true
+        for (var key in ary[i]) {
+          if (predicate[key] !== ary[i][key]) {
+            isSame = false
+          }
+        }
+        if (isSame) {
+          res.push(ary[i])
+        }
+      }
+      if (type === '[object Array]') {
+        if (ary[i][predicate[0]] === predicate[1]) {
+          res.push(ary[i])
+        }
+      }
+    }
+    return res
+  },
+
+  takeWhile: function takeWhile(ary, predicate) {
+    var type = Object.prototype.toString.call(predicate)
+    var res = []
+    for (var i = 0; i < ary.length; i++) {
+      if (type === '[object Function]') {
+        if (predicate(ary[i])) {
+          res.push(ary[i])
+        }
+      }
+      if (type === '[object String]') {
+        if (!(predicate in ary[i])) {
+          res.push(ary[i])
+        }
+      }
+      if (type === '[object Object]') {
+        var isSame = true
+        for (var key in ary[i]) {
+          if (predicate[key] !== ary[i][key]) {
+            isSame = false
+          }
+        }
+        if (isSame) {
+          res.push(ary[i])
+        }
+      }
+      if (type === '[object Array]') {
+        if (ary[i][predicate[0]] === predicate[1]) {
+          res.push(ary[i])
+        }
+      }
+    }
+    return res
+  },
 
   uniq: function uniq(ary) {
     var res = []
@@ -698,6 +848,61 @@ var gaoguoyiwrite = {
         res.push(it)
       }
     });
+    return res
+  },
+
+  uniqBy: function uniqBy(arr, iteratee) {
+
+    var map = {}
+    var res = []
+
+    if (typeof (iteratee) == "function") {
+      for (var i = 0; i < arr.length; i++) {
+        var item = iteratee(arr[i])
+        if (!(item in map)) {
+          map[item] = arr[i]
+        }
+      }
+    }
+    if (typeof (iteratee) == 'string') {
+      for (var i = 0; i < arr.length; i++) {
+        var item = arr[i][iteratee]
+        if (!(item in map)) {
+          map[item] = arr[i]
+        }
+      }
+    }
+    for (var key in map) {
+      res.push(map[key])
+    }
+    return res
+  },
+  uniqWith: function uniqWith(arr, iteratee) {
+    var res = arr[0]
+    for (var i = 1; i < arr1.length; i++) {
+      for (var j = 0; j < res.length; j++) {
+        if (iteratee(arr1[i], arr2[j])) {
+          res.push(arr1[i])
+        }
+      }
+    }
+    return res
+  },
+  unzip: function unzip(arr) {
+    var res = []
+    for (var i = 0; i < arr[0].length; i++) {
+      var item = []
+      for (var j = 0; j < arr.length; j++) {
+        item.push(arr[j][i])
+      }
+      res.push(item)
+    }
+    return res
+  },
+
+  unzipWith: function unzipWith(array, iteratee) {
+    var arr = unzip(array)
+    var res = arr.map(it => iteratee(...it))
     return res
   },
 
@@ -730,6 +935,35 @@ var gaoguoyiwrite = {
     }
     return res
   },
+
+  // xorBy: function xorBy(...arrays) {
+  //   var iteratee = arrays.pop()
+  //   var arr = []
+  //   for (var i = 0; i < arrays.length; i++) {
+  //     arr = arr.comcat(arrays[i])
+  //   }
+  //   var map = {}
+  //   if(typeof iteratee === 'function'){
+  //     for (var i = 0; i < arr.length; i++) {
+  //       var item = iteratee(arr[i])
+  //       if (item in map) {
+  //         map[item] ++
+  //       } else {
+  //         map[item] = 1
+  //       }
+  //     }
+  //   }
+  //   if(typeof iteratee === 'string'){
+  //     for (var i = 0; i < arr.length; i++) {
+  //       var item = arr[i][]
+  //       if (item in map) {
+  //         map[item] ++
+  //       } else {
+  //         map[item] = 1
+  //       }
+  //     }
+  //   }
+  // },
 
   zip: function zip(...arrays) {
     var res = []
@@ -792,4 +1026,13 @@ var gaoguoyiwrite = {
     }
     return map
   },
+
+  ary: function ary(f, n = f.length) {
+
+  },
+  // iteratee: function iteratee() {
+
+  // },
+
+
 }
