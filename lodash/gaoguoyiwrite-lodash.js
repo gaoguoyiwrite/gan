@@ -162,15 +162,14 @@ var gaoguoyiwrite = {
     return arr
   },
 
-  pullAllWith: function pullAllWith(arr, vals, iteratee) {
-    for (var i = 0; i < vals.length; i++) {
-      for (var j = 0; j < arr.length; j++) {
-        if (iteratee(arr[j], vals[i])) {
-          arr.splice(j, 1)
-        }
+  pullAllWith: function pullAllWith(arr, val, iteratee) {
+    var res = []
+    for (var i = 0; i < arr.length; i++) {
+      if (!iteratee(arr[i], val)) {
+        res.push(arr[i])
       }
     }
-    return arr
+    return res
   },
 
   chunk: function chunk(ary, size) {
@@ -218,7 +217,7 @@ var gaoguoyiwrite = {
     var res = []
     for (var i = 0; i < ary.length; i++) {
       if (type === '[object Function]') {
-        if (!predicate(ary[i], i, arr)) {
+        if (!predicate(ary[i])) {
           res.push(ary[i])
         }
       }
@@ -249,7 +248,7 @@ var gaoguoyiwrite = {
     var res = []
     for (var i = 0; i < ary.length; i++) {
       if (type === '[object Function]') {
-        if (!predicate(ary[i])) {
+        if (!predicate(ary[i], i, arr)) {
           res.push(ary[i])
         }
       }
@@ -600,7 +599,7 @@ var gaoguoyiwrite = {
     var res = []
     var arr = []
     for (var i = 0; i < ary.length; i++) {
-      arr = arr.comcat(ary[i])
+      arr = arr.concat(ary[i])
     }
     var res = arr[0]
     for (var i = 1; i < arr1.length; i++) {
@@ -909,6 +908,9 @@ var gaoguoyiwrite = {
           map[item] = arr[i]
         }
       }
+      for (var key in map) {
+        res.unshift(map[key])
+      }
     }
     if (typeof (iteratee) == 'string') {
       for (var i = 0; i < arr.length; i++) {
@@ -917,9 +919,9 @@ var gaoguoyiwrite = {
           map[item] = arr[i]
         }
       }
-    }
-    for (var key in map) {
-      res.unshift(map[key])
+      for (var key in map) {
+        res.push(map[key])
+      }
     }
     return res
   },
