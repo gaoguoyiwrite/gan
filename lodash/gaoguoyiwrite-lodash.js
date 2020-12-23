@@ -165,7 +165,7 @@ var gaoguoyiwrite = {
   pullAllWith: function pullAllWith(arr, vals, iteratee) {
     for (var i = 0; i < vals.length; i++) {
       for (var j = 0; j < arr.length; j++) {
-        if (iteratee(arr[j], vals)) {
+        if (iteratee(arr[j], vals[i])) {
           arr.splice(j, 1)
         }
       }
@@ -919,16 +919,16 @@ var gaoguoyiwrite = {
       }
     }
     for (var key in map) {
-      res.push(map[key])
+      res.unshift(map[key])
     }
     return res
   },
   uniqWith: function uniqWith(arr, iteratee) {
     var res = arr[0]
-    for (var i = 1; i < arr1.length; i++) {
+    for (var i = 1; i < arr.length; i++) {
       for (var j = 0; j < res.length; j++) {
-        if (iteratee(arr1[i], arr2[j])) {
-          res.push(arr1[i])
+        if (iteratee(arr[i], res[j])) {
+          res.push(arr[i])
         }
       }
     }
@@ -947,7 +947,14 @@ var gaoguoyiwrite = {
   },
 
   unzipWith: function unzipWith(array, iteratee) {
-    var arr = unzip(array)
+    var arr = []
+    for (var i = 0; i < array[0].length; i++) {
+      var item = []
+      for (var j = 0; j < array.length; j++) {
+        item.push(array[j][i])
+      }
+      arr.push(item)
+    }
     var res = arr.map(it => iteratee(...it))
     return res
   },
