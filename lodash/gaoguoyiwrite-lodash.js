@@ -248,9 +248,11 @@ var gaoguoyiwrite = {
     var res = []
     for (var i = 0; i < ary.length; i++) {
       if (type === '[object Function]') {
-        if (!predicate(ary[i], i, arr)) {
-          res.push(ary[i])
+        if (predicate(ary[i]) == false) {
+          res.push(...ary.slice(i))
+          break
         }
+        continue
       }
       if (type === '[object String]') {
         if (predicate in ary[i]) {
@@ -929,7 +931,7 @@ var gaoguoyiwrite = {
     var res = arr[0]
     for (var i = 1; i < arr.length; i++) {
       for (var j = 0; j < res.length; j++) {
-        if (iteratee(arr[i], res[j])) {
+        if (!(iteratee(arr[i], res[j]))) {
           res.push(arr[i])
         }
       }
