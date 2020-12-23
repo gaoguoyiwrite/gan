@@ -25,31 +25,55 @@ var gaoguoyiwrite = {
     return result
   },
 
-  differenceBy: function differenceBy(ary, predicate) {
-    var type = Object.prototype.toString.call(predicate)
+  differenceBy: function differenceBy(val, ...arr) {
+    var predicate = arr.pop()
+    var ary = []
+    for (var i = 0; i < arr.length; i++) {
+      ary = ary.concat(arr[i])
+    }
     var res = []
-    for (var i = 0; i < ary.length; i++) {
-      if (type === '[object Function]') {
-        if (!predicate(ary[i])) {
-          res.push(ary[i])
-        }
-      }
-      if (type === '[object String]') {
-        if (predicate in ary[i]) {
-          res.push(ary[i])
-        }
-      }
-      if (type === '[object Object]') {
-        for (var key in ary[i]) {
-          if (predicate[key] !== ary[i][key]) {
-            res.push(ary[i])
+    if (typeof (predicate) === 'object') {
+      ary = ary.concat(predicate)
+      for (var i = 0; i < val.length; i++) {
+        var isSame = false
+        for (var j = 0; j < ary.length; j++) {
+          if (val[i] === ary[j]) {
+            isSame = true
             break
           }
         }
+        if (isSame === false) {
+          res.push(val[i])
+        }
       }
-      if (type === '[object Array]') {
-        if (ary[i][predicate[0]] !== predicate[1]) {
-          res.push(ary[i])
+    }
+    if (typeof (predicate) === 'function') {
+      for (var i = 0; i < val.length; i++) {
+        var isSame = false
+        for (var j = 0; j < ary.length; j++) {
+          if (predicate(val[i]) === predicate(ary[j])) {
+            isSame = true
+            break
+          }
+        }
+        if (isSame === false) {
+          res.push(val[i])
+        }
+      }
+
+    }
+    if (typeof (predicate) === 'string') {
+      for (var i = 0; i < val.length; i++) {
+        var isSame = false
+        for (var j = 0; j < ary.length; j++) {
+          if (val[i][predicate] === ary[j][predicate]) {
+            isSame = true
+            break
+          }
+        }
+        if (isSame === false) {
+          res.push(val[i])
+
         }
       }
     }
@@ -194,7 +218,7 @@ var gaoguoyiwrite = {
     var res = []
     for (var i = 0; i < ary.length; i++) {
       if (type === '[object Function]') {
-        if (!predicate(ary[i])) {
+        if (!predicate(ary[i], i, arr)) {
           res.push(ary[i])
         }
       }
@@ -504,12 +528,22 @@ var gaoguoyiwrite = {
     if (typeof (iteratee) == "function") {
       var arr1 = arr.map(it => iteratee(it))
       var val1 = iteratee(val)
-      return sortedIndex(arr1, val1)
+      for (var i = 0; i < arr1.length; i++) {
+        if (arr1[i] >= val1) {
+          return i
+        }
+      }
+      return arr1.length
     }
     if (typeof (iteratee) == 'string') {
       arr1 = arr.map(it => it[iteratee])
       val1 = val[iteratee]
-      return sortedIndex(arr1, val1)
+      for (var i = 0; i < arr1.length; i++) {
+        if (arr1[i] >= val1) {
+          return i
+        }
+      }
+      return arr1.length
     }
   },
 
@@ -531,7 +565,7 @@ var gaoguoyiwrite = {
     var res = []
     var arr = []
     for (var i = 0; i < ary.length; i++) {
-      arr = arr.comcat(ary[i])
+      arr = arr.concat(ary[i])
     }
 
     if (typeof (iteratee) == "function") {
@@ -541,6 +575,9 @@ var gaoguoyiwrite = {
           map[item] = arr[i]
         }
       }
+      for (var key in map) {
+        res.unshift(map[key])
+      }
     }
     if (typeof (iteratee) == 'string') {
       for (var i = 0; i < arr.length; i++) {
@@ -549,10 +586,11 @@ var gaoguoyiwrite = {
           map[item] = arr[i]
         }
       }
+      for (var key in map) {
+        res.push(map[key])
+      }
     }
-    for (var key in map) {
-      res.push(map[key])
-    }
+
     return res
   },
 
@@ -714,12 +752,20 @@ var gaoguoyiwrite = {
     if (typeof (iteratee) == "function") {
       var arr1 = arr.map(it => iteratee(it))
       var val1 = iteratee(val)
-      return sortedLastIndex(arr1, val1)
+      for (var i = arr1.length - 1; i >= 0; i--) {
+        if (arr1[i] === val1) {
+          return i + 1
+        }
+      }
     }
     if (typeof (iteratee) == 'string') {
       arr1 = arr.map(it => it[iteratee])
       val1 = val[iteratee]
-      return sortedLastIndex(arr1, val1)
+      for (var i = arr1.length - 1; i >= 0; i--) {
+        if (arr1[i] === val1) {
+          return i + 1
+        }
+      }
     }
   },
 
@@ -779,7 +825,7 @@ var gaoguoyiwrite = {
     for (var i = ary.length - 1; i >= 0; i--) {
       if (type === '[object Function]') {
         if (predicate(ary[i])) {
-          res.push(ary[i])
+          res.unshift(ary[i])
         }
       }
       if (type === '[object String]') {
@@ -800,7 +846,7 @@ var gaoguoyiwrite = {
       }
       if (type === '[object Array]') {
         if (ary[i][predicate[0]] === predicate[1]) {
-          res.push(ary[i])
+          res.unshift(ary[i])
         }
       }
     }
@@ -1034,5 +1080,59 @@ var gaoguoyiwrite = {
 
   // },
 
+  // isEqual: function isEqual(value, other) {
+  //   if (value === other) {
+  //     return true
+  //   }
+  //   if (value !== value && other !== other) {
+  //     return true
+  //   }
+  //   if (typeof (value, other) === "object" && value.length === other.length) {
+  //     for (var key in vulue) {
+  //       if (value[key] === other[key])
+  //     }
+  //   }
+
+  // },
+
+  concat: function concat(arr, ...values) {
+    var res = arr
+    for (var i = 0; i < values.length; i++) {
+      if (typeof (values[i]) === 'number') {
+        res.push(values[i])
+      } else if (typeof (values[i]) === 'object') {
+        for (var j = 0; j < values[i].length; j++) {
+          res.push(values[i][j])
+        }
+      }
+    }
+    return res
+  },
 
 }
+// 输入：isEqual({"a":1},{"a":1})
+// 输出/期望：true
+// =================
+// 输入：isEqual(1,2)
+// 输出/期望：false
+// =================
+// 输入：isEqual(2,2)
+// 输出/期望：true
+// =================
+// 输入：isEqual("foo","foo")
+// 输出/期望：true
+// =================
+// 输入：isEqual([1,2,3],[1,2,3])
+// 输出/期望：true
+// =================
+// 输入：isEqual([1,2],{"0":1,"1":2,"length":2})
+// 输出/期望：false
+// =================
+// 输入：isEqual([{},{}],[{},{}])
+// 输出/期望：true
+// =================
+// 输入：isEqual({"a":1,"b":2},{"a":1,"b":2,"c":3})
+// 输出/期望：false
+// =================
+// 输入：isEqual({"a":1,"b":2},{"b":2,"a":1})
+// 输出/期望：true
