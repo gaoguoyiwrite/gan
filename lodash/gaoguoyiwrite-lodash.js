@@ -1,7 +1,7 @@
-var gaoguoyiwrite = (function () {
+var gaoguoyiwrite = {
 
 
-  function compact(ary) {
+  compact: function compact(ary) {
     var resault = []
     for (var i = 0; i < ary.length; i++) {
       if (ary[i]) {
@@ -9,9 +9,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return resault
-  }
+  },
 
-  function difference(array, ...args) {
+  difference: function difference(array, ...args) {
     var result = []
     var values = args[0]
     for (var j = 1; j < args.length; j++) {
@@ -23,9 +23,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return result
-  }
+  },
 
-  function differenceBy(val, ...arr) {
+  differenceBy: function differenceBy(val, ...arr) {
     var predicate = arr.pop()
     var ary = []
     for (var i = 0; i < arr.length; i++) {
@@ -78,9 +78,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
-  function differenceWith(ary, values, comparator) {
+  differenceWith: function (ary, values, comparator) {
     var res = []
     for (var i = 0; i < ary.length; i++) {
       for (var j = 0; j < values.length; j++) {
@@ -90,22 +90,22 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
 
-  function join(ary, string) {
+  join: function (ary, string) {
     var str = ""
     for (var i = 0; i < ary.length - 1; i++) {
       str += ary[i] + String(string)
     }
     return str + ary[ary.length - 1]
-  }
+  },
 
-  function last(ary) {
+  last: function (ary) {
     return ary[ary.length - 1]
-  }
+  },
 
-  function lastindextOf(ary, value, start) {
+  lastindextOf: function lastindextOf(ary, value, start) {
     if (!start) {
       start = ary.length
     }
@@ -114,9 +114,9 @@ var gaoguoyiwrite = (function () {
         break
     }
     return i
-  }
+  },
 
-  function nth(ary, n) {
+  nth: function (ary, n) {
     if (Math.abs(n) > ary.length) {
       return undefined
     }
@@ -126,8 +126,8 @@ var gaoguoyiwrite = (function () {
       return ary[ary.length + n]
     }
 
-  }
-  function pull(ary, ...nums) {
+  },
+  pull: function (ary, ...nums) {
     for (var i = 0; i < nums.length; i++) {
       for (var j = 0; j < ary.length; j++) {
         if (nums[i] === ary[j]) {
@@ -136,9 +136,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return ary
-  }
+  },
 
-  function pullAll(ary, nums) {
+  pullAll: function (ary, nums) {
     for (var i = 0; i < nums.length; i++) {
       for (var j = 0; j < ary.length; j++) {
         if (nums[i] === ary[j]) {
@@ -147,9 +147,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return ary
-  }
+  },
 
-  function pullAllBy(arr, vals, iteratee) {
+  pullAllBy: function pullAllBy(arr, vals, iteratee) {
     for (var i = 0; i < vals.length; i++) {
       for (var j = 0; j < arr.length; j++) {
         if (arr[j][iteratee] === vals[i][iteratee]) {
@@ -160,9 +160,9 @@ var gaoguoyiwrite = (function () {
 
     }
     return arr
-  }
+  },
 
-  function pullAllWith(arr, val, iteratee) {
+  pullAllWith: function pullAllWith(arr, val, iteratee) {
     for (var i = 0; i < val.length; i++) {
       for (var j = 0; j < arr.length; j++) {
         if (iteratee(arr[j], val[i])) {
@@ -171,9 +171,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return arr
-  }
+  },
 
-  function chunk(ary, size) {
+  chunk: function chunk(ary, size) {
     var resault = []
     for (var i = 0; i < ary.length;) {
       var t = []
@@ -185,9 +185,9 @@ var gaoguoyiwrite = (function () {
     }
     return resault
 
-  }
+  },
 
-  function drop(ary, n) {
+  drop: function (ary, n) {
     if (!n && !(n === 0)) {
       n = 1
     }
@@ -198,9 +198,9 @@ var gaoguoyiwrite = (function () {
       ary.shift()
     }
     return ary
-  }
+  },
 
-  function dropRight(ary, n) {
+  dropRight: function (ary, n) {
     if (!n && !(n === 0)) {
       n = 1
     }
@@ -211,9 +211,9 @@ var gaoguoyiwrite = (function () {
     ary.splice(ary.length - n, n)
     return ary
 
-  }
+  },
 
-  function dropRightWhile(ary, predicate) {
+  dropRightWhile: function dropRightWhile(ary, predicate) {
     var type = Object.prototype.toString.call(predicate)
     var res = []
     for (var i = 0; i < ary.length; i++) {
@@ -242,9 +242,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
-  function dropWhile(ary, predicate) {
+  dropWhile: function dropWhile(ary, predicate) {
     var type = Object.prototype.toString.call(predicate)
     var res = []
     for (var i = 0; i < ary.length; i++) {
@@ -275,10 +275,10 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
 
-  function fill(ary, str, start, end) {
+  fill: function (ary, str, start, end) {
     if (!start && !(start === 0)) {
       start = 0
     }
@@ -289,9 +289,9 @@ var gaoguoyiwrite = (function () {
       ary[i] = str
     }
     return ary
-  }
+  },
 
-  function findIndex(ary, predicate) {
+  findIndex: function findIndex(ary, predicate) {
     var type = Object.prototype.toString.call(predicate)
     for (var i = 0; i < ary.length; i++) {
       if (type === '[object Function]') {
@@ -319,9 +319,9 @@ var gaoguoyiwrite = (function () {
       }
 
     }
-  }
+  },
 
-  function findLastIndex(ary, predicate) {
+  findLastIndex: function findLastIndex(ary, predicate) {
     var type = Object.prototype.toString.call(predicate)
     for (var i = ary.length - 1; i >= 0; i--) {
       if (type === '[object Function]') {
@@ -349,9 +349,9 @@ var gaoguoyiwrite = (function () {
       }
 
     }
-  }
+  },
 
-  function flatten(array) {
+  flatten: function (array) {
     var newArray = []
     for (var i = 0; i < array.length; i++) {
 
@@ -365,11 +365,11 @@ var gaoguoyiwrite = (function () {
       }
     }
     return newArray
-  }
+  },
 
 
 
-  function flattenDeep(array) {
+  flattenDeep: function (array) {
     var newArray = []
     var fd = function (array) {
       for (var i = 0; i < array.length; i++) {
@@ -384,8 +384,9 @@ var gaoguoyiwrite = (function () {
       return newArray
     }
     return fd(array)
-  }
-  function flattenDepth(array, depth = 1) {
+  },
+
+  flattenDepth: function flattenDepth(array, depth = 1) {
     if (depth == 0) {
       return array.slice()
     }
@@ -398,26 +399,26 @@ var gaoguoyiwrite = (function () {
       }
     }
     return result
-  }
+  },
 
 
-  function fromPairs(array) {
+  fromPairs: function (array) {
     var pairs = {}
     for (var i = 0; i < array.length; i++) {
       pairs[array[i][0]] = array[i][1]
     }
     return pairs
-  }
+  },
 
-  function head(array) {
+  head: function (array) {
     if (array.length === 0) {
       return undefined
     }
     return array[0]
-  }
+  },
 
 
-  function indexOf(arr, val, start) {
+  indexOf: function (arr, val, start) {
     if (!start && !(start === 0)) {
       start = 0
     }
@@ -427,24 +428,24 @@ var gaoguoyiwrite = (function () {
       }
     }
     return -1
-  }
+  },
 
 
-  function lastIndexOf(arr, value, fromIndex = arr.length - 1) {
+  lastIndexOf: function lastIndexOf(arr, value, fromIndex = arr.length - 1) {
     for (var i = fromIndex; i >= 0; i--) {
       if (arr[i] === value) {
         return i
       }
     }
     return -1
-  }
+  },
 
-  function initia(arr) {
+  initial: function (arr) {
     arr.splice(arr.length - 1, 1)
     return arr
-  }
+  },
 
-  function intersection(...ary) {
+  intersection: function (...ary) {
     var result = []
     for (var i = 0; i < ary[0].length; i++) {
       for (var j = 1; j < ary.length; j++) {
@@ -458,8 +459,8 @@ var gaoguoyiwrite = (function () {
 
     }
     return result
-  }
-  function intersectionBy(arr1, arr2, iteratee) {
+  },
+  intersectionBy: function intersectionBy(arr1, arr2, iteratee) {
     var res = []
     if (typeof (iteratee) === "function") {
 
@@ -490,9 +491,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
-  function intersectionWith(arr1, arr2, iteratee) {
+  intersectionWith: function intersectionWith(arr1, arr2, iteratee) {
     var res = []
     for (var i = 0; i < arr1.length; i++) {
       for (var j = 0; j < arr2.length; j++) {
@@ -502,9 +503,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
-  function reverse(array) {
+  reverse: function (array) {
 
     var i = 0
     var j = array.length - 1
@@ -514,18 +515,18 @@ var gaoguoyiwrite = (function () {
       j--
     }
     return array
-  }
+  },
 
-  function sortedIndex(array, value) {
+  sortedIndex: function sortedIndex(array, value) {
     for (var i = 0; i < array.length; i++) {
       if (array[i] >= value) {
         return i
       }
     }
     return array.length
-  }
+  },
 
-  function sortedIndexBy(arr, val, iteratee) {
+  sortedIndexBy: function sortedIndexBy(arr, val, iteratee) {
     if (typeof (iteratee) == "function") {
       var arr1 = arr.map(it => iteratee(it))
       var val1 = iteratee(val)
@@ -546,9 +547,9 @@ var gaoguoyiwrite = (function () {
       }
       return arr1.length
     }
-  }
+  },
 
-  function union(...ary) {
+  union: function (...ary) {
     var res = []
     for (var i = 0; i < ary.length; i++) {
       for (var j = 0; j < ary[i].length; j++) {
@@ -559,8 +560,8 @@ var gaoguoyiwrite = (function () {
     }
 
     return res
-  }
-  function unionBy(...ary) {
+  },
+  unionBy: function unionBy(...ary) {
     var iteratee = ary.pop()
     var map = {}
     var res = []
@@ -593,9 +594,9 @@ var gaoguoyiwrite = (function () {
     }
 
     return res
-  }
+  },
 
-  function unionWith(...ary) {
+  unionWith: function unionWith(...ary) {
     var iteratee = ary.pop()
     var res = []
     var arr = []
@@ -615,10 +616,10 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
 
-  function toArray(st) {
+  toArray: function toArray(st) {
     var resault = []
     var a = typeof (st)
     if (a == "number") {
@@ -635,12 +636,12 @@ var gaoguoyiwrite = (function () {
       }
     }
     return resault
-  }
+  },
 
 
 
 
-  function max(ary) {
+  max: function (ary) {
     if (ary.length === 0) {
       return undefined
     }
@@ -651,9 +652,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return max
-  }
+  },
 
-  function maxBy(array, predicate) {
+  maxBy: function (array, predicate) {
     var num = 0
     var max = array[0]
     for (var i = 1; i < array.length; i++) {
@@ -666,9 +667,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return array[num]
-  }
+  },
 
-  function min(arr) {
+  min: function min(arr) {
     if (arr.length == 0) {
       return undefined
     }
@@ -679,10 +680,10 @@ var gaoguoyiwrite = (function () {
       }
     }
     return min
-  }
+  },
 
 
-  function minBy(array, key) {
+  minBy: function (array, key) {
     var num = 0
     var min = array[0]
     for (var i = 1; i < array.length; i++) {
@@ -695,36 +696,36 @@ var gaoguoyiwrite = (function () {
     }
     return array[num]
 
-  }
+  },
 
 
-  function sum(ary) {
+  sum: function (ary) {
     var sum = 0
     for (var i = 0; i < ary.length; i++) {
       sum += ary[i]
     }
     return sum
-  }
+  },
 
 
-  function sumBy(array, predicate) {
+  sumBy: function (array, predicate) {
     var sum = 0
     for (var i = 0; i < array.length; i++) {
       sum += predicate(array[i], i, array)
     }
     return sum
-  }
+  },
 
-  function mapValues(obj, mapper) {
+  mapValues: function (obj, mapper) {
     var resault = {}
     for (var kry in obj) {
       var val = obj[key]
       result[mapper(val, key, obj)] = val
     }
     return result
-  }
+  },
 
-  function groupBy(array, predicate) {
+  groupBy: function (array, predicate) {
     var result = {}
     for (var i = 0; i < array.length; i++) {
       var key = predicate(array[i], i, array)
@@ -734,25 +735,25 @@ var gaoguoyiwrite = (function () {
       result[key].push(array[i])
     }
     return result
-  }
+  },
 
-  function sortedIndexOf(ary, num) {
+  sortedIndexOf: function sortedIndexOf(ary, num) {
     for (var i = 0; i < ary.length; i++) {
       if (ary[i] === num) {
         return i
       }
     }
-  }
+  },
 
-  function sortedLastIndex(array, value) {
+  sortedLastIndex: function sortedLastIndex(array, value) {
     for (var i = array.length - 1; i >= 0; i--) {
       if (array[i] === value) {
         return i + 1
       }
     }
-  }
+  },
 
-  function sortedLastIndexBy(arr, val, iteratee) {
+  sortedLastIndexBy: function sortedLastIndexBy(arr, val, iteratee) {
     if (typeof (iteratee) == "function") {
       var arr1 = arr.map(it => iteratee(it))
       var val1 = iteratee(val)
@@ -771,17 +772,17 @@ var gaoguoyiwrite = (function () {
         }
       }
     }
-  }
+  },
 
 
-  function sortedLastIndexOf(array, value) {
+  sortedLastIndexOf: function sortedLastIndexOf(array, value) {
     for (var i = array.length - 1; i >= 0; i--) {
       if (array[i] === value) {
         return i
       }
     }
-  }
-  function sortedUniq(array) {
+  },
+  sortedUniq: function sortedUniq(array) {
     var res = []
     for (var i = 0; i < array.length; i++) {
       if (!res.includes(array[i])) {
@@ -789,8 +790,8 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
-  function sortedUniqBy(array, iteratee) {
+  },
+  sortedUniqBy: function sortedUniqBy(array, iteratee) {
     var map = {}
     var res = []
     for (var i = 0; i < array.length; i++) {
@@ -802,19 +803,19 @@ var gaoguoyiwrite = (function () {
       res.push(map[key])
     }
     return res
-  }
+  },
 
-  function tail(ary) {
+  tail: function tail(ary) {
     ary.splice(0, 1)
     return ary
-  }
-  function take(ary, n = 1) {
+  },
+  take: function take(ary, n = 1) {
     if (n > ary.length) {
       return ary
     }
     return ary.slice(0, n)
-  }
-  function takeRight(ary, n = 1) {
+  },
+  takeRight: function takeRight(ary, n = 1) {
     if (n > ary.length) {
       return ary
     }
@@ -822,8 +823,8 @@ var gaoguoyiwrite = (function () {
       return []
     }
     return ary.slice(-n)
-  }
-  function takeRightWhile(ary, predicate) {
+  },
+  takeRightWhile: function takeRightWhile(ary, predicate) {
     var type = Object.prototype.toString.call(predicate)
     var res = []
     for (var i = ary.length - 1; i >= 0; i--) {
@@ -855,9 +856,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
-  function takeWhile(ary, predicate) {
+  takeWhile: function takeWhile(ary, predicate) {
     var type = Object.prototype.toString.call(predicate)
     var res = []
     for (var i = 0; i < ary.length; i++) {
@@ -889,9 +890,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
-  function uniq(ary) {
+  uniq: function uniq(ary) {
     var res = []
     ary.forEach(it => {
       if (!res.includes(it)) {
@@ -899,9 +900,9 @@ var gaoguoyiwrite = (function () {
       }
     });
     return res
-  }
+  },
 
-  function uniqBy(arr, iteratee) {
+  uniqBy: function uniqBy(arr, iteratee) {
 
     var map = {}
     var res = []
@@ -929,8 +930,8 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
-  function uniqWith(arr, iteratee) {
+  },
+  uniqWith: function uniqWith(arr, iteratee) {
     var res = [arr[0]]
     for (var i = 1; i < arr.length; i++) {
       var isIn = false
@@ -944,8 +945,8 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
-  function unzip(arr) {
+  },
+  unzip: function unzip(arr) {
     var res = []
     for (var i = 0; i < arr[0].length; i++) {
       var item = []
@@ -955,9 +956,9 @@ var gaoguoyiwrite = (function () {
       res.push(item)
     }
     return res
-  }
+  },
 
-  function unzipWith(array, iteratee) {
+  unzipWith: function unzipWith(array, iteratee) {
     var arr = []
     for (var i = 0; i < array[0].length; i++) {
       var item = []
@@ -968,9 +969,9 @@ var gaoguoyiwrite = (function () {
     }
     var res = arr.map(it => iteratee(...it))
     return res
-  }
+  },
 
-  function without(ary, ...values) {
+  without: function without(ary, ...values) {
     var res = []
     for (var i = 0; i < ary.length; i++) {
       if (!values.includes(ary[i])) {
@@ -978,9 +979,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
-  function xor(...ary) {
+  xor: function xor(...ary) {
     var map = {}
     for (var i = 0; i < ary.length; i++) {
       for (var j = 0; j < ary[i].length; j++) {
@@ -998,9 +999,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
-  function xorBy(...arrays) {
+  xorBy: function xorBy(...arrays) {
     var iteratee = arrays.pop()
     var arr = []
     for (var i = 0; i < arrays.length; i++) {
@@ -1034,9 +1035,9 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
-  function xorWith(object, other, comparator) {
+  xorWith: function xorWith(object, other, comparator) {
     var arr = object.concat(other)
     var map = {}
     for (var i = 0; i < arr.length; i++) {
@@ -1056,8 +1057,8 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
-  function zip(...arrays) {
+  },
+  zip: function zip(...arrays) {
     var res = []
     for (var i = 0; i < arrays[0].length; i++) {
       res.push([])
@@ -1068,21 +1069,21 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
-  function zipObject(arr, vals) {
+  zipObject: function zipObject(arr, vals) {
     var res = {}
     for (var i = 0; i < arr.length; i++) {
       res[arr[i]] = vals[i]
     }
     return res
-  }
+  },
 
-  function zipObjectDeep(props, vals) {
+  zipObjectDeep: function zipObjectDeep(props, vals) {
 
-  }
+  },
 
-  function zipWith(...ary) {
+  zipWith: function zipWith(...ary) {
     var iteratee = ary.pop()
 
     var res = []
@@ -1094,9 +1095,9 @@ var gaoguoyiwrite = (function () {
       res.push(iteratee(...args))
     }
     return res
-  }
+  },
 
-  function countBy(collection, iteratee) {
+  countBy: function countBy(collection, iteratee) {
     var map = {}
     if (typeof (iteratee) === 'function') {
       for (var i = 0; i < collection.length; i++) {
@@ -1118,11 +1119,11 @@ var gaoguoyiwrite = (function () {
       }
     }
     return map
-  }
+  },
 
-  function ary(f, n = f.length) {
+  ary: function ary(f, n = f.length) {
 
-  }
+  },
   // iteratee: function iteratee() {
 
   // },
@@ -1142,7 +1143,7 @@ var gaoguoyiwrite = (function () {
 
   // },
 
-  function concat(arr, ...values) {
+  concat: function concat(arr, ...values) {
     var res = arr
     for (var i = 0; i < values.length; i++) {
       if (typeof (values[i]) === 'number') {
@@ -1154,7 +1155,32 @@ var gaoguoyiwrite = (function () {
       }
     }
     return res
-  }
+  },
 
 }
-)
+// 输入：isEqual({"a":1},{"a":1})
+// 输出/期望：true
+// =================
+// 输入：isEqual(1,2)
+// 输出/期望：false
+// =================
+// 输入：isEqual(2,2)
+// 输出/期望：true
+// =================
+// 输入：isEqual("foo","foo")
+// 输出/期望：true
+// =================
+// 输入：isEqual([1,2,3],[1,2,3])
+// 输出/期望：true
+// =================
+// 输入：isEqual([1,2],{"0":1,"1":2,"length":2})
+// 输出/期望：false
+// =================
+// 输入：isEqual([{},{}],[{},{}])
+// 输出/期望：true
+// =================
+// 输入：isEqual({"a":1,"b":2},{"a":1,"b":2,"c":3})
+// 输出/期望：false
+// =================
+// 输入：isEqual({"a":1,"b":2},{"b":2,"a":1})
+// 输出/期望：true
