@@ -166,7 +166,7 @@ var gaoguoyiwrite = {
     for (var i = 0; i < val.length; i++) {
       for (var j = 0; j < arr.length; j++) {
         if (iteratee(arr[j], val[i])) {
-          arr.slice(j, 1)
+          arr.splice(j, 1)
         }
       }
     }
@@ -934,7 +934,7 @@ var gaoguoyiwrite = {
   uniqWith: function uniqWith(arr, iteratee) {
     var res = [arr[0]]
     for (var i = 1; i < arr.length; i++) {
-      var isIn = flase
+      var isIn = false
       for (var j = 0; j < res.length; j++) {
         if (iteratee(arr[i], res[j])) {
           isIn = true
