@@ -163,13 +163,14 @@ var gaoguoyiwrite = {
   },
 
   pullAllWith: function pullAllWith(arr, val, iteratee) {
-    var res = []
-    for (var i = 0; i < arr.length; i++) {
-      if (!iteratee(arr[i], val)) {
-        res.push(arr[i])
+    for (var i = 0; i < val.length; i++) {
+      for (var j = 0; j < arr.length; j++) {
+        if (iteratee(arr[j], val[i])) {
+          arr.slice(j, 1)
+        }
       }
     }
-    return res
+    return arr
   },
 
   chunk: function chunk(ary, size) {
@@ -597,18 +598,21 @@ var gaoguoyiwrite = {
 
   unionWith: function unionWith(...ary) {
     var iteratee = ary.pop()
-    var map = {}
     var res = []
     var arr = []
     for (var i = 0; i < ary.length; i++) {
       arr = arr.concat(ary[i])
     }
-    var res = arr[0]
-    for (var i = 1; i < arr1.length; i++) {
+    var res = [arr[0]]
+    for (var i = 1; i < arr.length; i++) {
+      var isIn = false
       for (var j = 0; j < res.length; j++) {
-        if (iteratee(arr1[i], arr2[j])) {
-          res.push(arr1[i])
+        if (iteratee(arr[i], res[j])) {
+          isIn = true
         }
+      }
+      if (!isIn) {
+        res.push(arr[i])
       }
     }
     return res
@@ -928,12 +932,16 @@ var gaoguoyiwrite = {
     return res
   },
   uniqWith: function uniqWith(arr, iteratee) {
-    var res = arr[0]
+    var res = [arr[0]]
     for (var i = 1; i < arr.length; i++) {
+      var isIn = flase
       for (var j = 0; j < res.length; j++) {
-        if (!(iteratee(arr[i], res[j]))) {
-          res.push(arr[i])
+        if (iteratee(arr[i], res[j])) {
+          isIn = true
         }
+      }
+      if (!isIn) {
+        res.push(arr[i])
       }
     }
     return res
