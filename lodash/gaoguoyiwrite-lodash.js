@@ -1,4 +1,4 @@
-var gaoguoyiwrite = (function () {
+var gaoguoyiwrite = function () {
 
   function identity(predicate) {
     var type = Object.prototype.toString.call(predicate)
@@ -1263,6 +1263,28 @@ var gaoguoyiwrite = (function () {
     return map
   }
 
+  // function includes(collection, val, fromIndex = 0) {
+  //   if (Array.isArray(collection)  )
+  //     for (var i = fromIndex; i < collection.length; i++) {
+  //       if (collection[i] === val) {
+  //         return true
+  //       }
+  //     } else if (typeof (collection) == 'object') {
+  //       for (var key in collection) {
+  //         if (collection[key] == val) {
+  //           return true
+  //         }
+  //       }
+  //   } else if (typeof (collection) == 'string') {
+  //     for (var i = fromIndex; i < collection.length; i++){
+  //      re
+
+  //       }
+  //     }
+  //     }
+  //   return false
+  // }
+
 
   return {
     compact,
@@ -1345,7 +1367,8 @@ var gaoguoyiwrite = (function () {
     flatMapDeep,
     flattenDepth,
     forEach,
-    forEachRight
+    forEachRight,
+    groupBy
   }
-})()
+}()
 
