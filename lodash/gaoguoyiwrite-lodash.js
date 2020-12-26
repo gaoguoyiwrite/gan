@@ -1,6 +1,7 @@
 var gaoguoyiwrite = function () {
 
 
+
   function compact(ary) {
     var resault = []
     for (var i = 0; i < ary.length; i++) {
@@ -1113,9 +1114,6 @@ var gaoguoyiwrite = function () {
     return map
   }
 
-  function ary(f, n = f.length) {
-  }
-
   function concat(arr, ...values) {
     var res = arr
     for (var i = 0; i < values.length; i++) {
@@ -1129,6 +1127,57 @@ var gaoguoyiwrite = function () {
     }
     return res
   }
+
+  function every(collection, predicate) {
+    var type = Object.prototype.toString.call(predicate)
+    for (var i = 0; i < collection.length; i++) {
+      if (type === '[object Function]') {
+        if (!(predicate(collection[i]))) {
+          return false
+        }
+      } else if (type === '[object String]') {
+        if (!collection[predicate]) {
+          return false
+        }
+      } else if (type === '[object Array]') {
+        if (collection[i][predicate[0]] !== predicate[1]) {
+          return false
+        }
+      } else if (type === '[object Object]') {
+        for (var key in predicate) {
+          if (collection[key] !== predicate[key]) {
+            return false
+          }
+        }
+      }
+    }
+    return true
+  }
+
+  function filter(arr, predicate) {
+    var res = []
+    predicate = identity(predicate)
+    for (var i = 0; i < arr.length; i++) {
+      if (predicate(arr[i])) {
+        res.push(arr[i])
+      }
+    }
+    return res
+  }
+
+  function identity(predicate) {
+    var type = Object.prototype.toString.call(predicate)
+    if (type === '[object Function]') return predicate
+    else if (type === '[object String]') return ((it) => it[predicate])
+    else if (type === '[object Array]') return (it => it[predicate[0]] = predicate[1])
+    else if (type === '[object Object]') return (it => {
+      for (var key in predicate) {
+        predicate[key] === it[key]
+      }
+    })
+
+  }
+
 
   return (
     compact,
@@ -1202,7 +1251,6 @@ var gaoguoyiwrite = function () {
     zipObjectDeep,
     zipWith,
     countBy,
-    ary,
     concat
   )
 }
