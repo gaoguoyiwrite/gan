@@ -1,6 +1,21 @@
-var gaoguoyiwrite = function () {
+var gaoguoyiwrite = (function () {
 
+  function identity(predicate) {
+    var type = Object.prototype.toString.call(predicate)
+    if (type === '[object Function]') return predicate
+    else if (type === '[object String]') return ((it) => it[predicate])
+    else if (type === '[object Array]') return (it) => it[predicate[0]] == predicate[1]
+    else if (type === '[object Object]') return (it => {
+      for (var key in predicate) {
+        if (predicate[key] !== it[key]) {
+          return false
+          break
+        }
+      }
+      return true
+    })
 
+  }
 
   function compact(ary) {
     var resault = []
@@ -367,20 +382,18 @@ var gaoguoyiwrite = function () {
   }
 
   function flattenDeep(array) {
-    var newArray = []
-    var fd = function (array) {
-      for (var i = 0; i < array.length; i++) {
-
-        var a = typeof (array[i])
-        if (a !== "object") {
-          newArray.push(array[i])
-        } else {
-          fd(array[i])
-        }
+    var res = []
+    for (var i = 0; i < array.length; i++) {
+      var a = typeof (array[i])
+      if (a !== "object") {
+        res.push(array[i])
+      } else {
+        res = res.concat(flatMapDeep(array[i]))
       }
-      return newArray
     }
-    return fd(array)
+    return res
+
+
   }
 
   function flattenDepth(array, depth = 1) {
@@ -1165,21 +1178,93 @@ var gaoguoyiwrite = function () {
     return res
   }
 
-  function identity(predicate) {
-    var type = Object.prototype.toString.call(predicate)
-    if (type === '[object Function]') return predicate
-    else if (type === '[object String]') return ((it) => it[predicate])
-    else if (type === '[object Array]') return (it => it[predicate[0]] = predicate[1])
-    else if (type === '[object Object]') return (it => {
-      for (var key in predicate) {
-        predicate[key] === it[key]
+  function find(arr, predicate, fromIdx = 0) {
+    var res = []
+    predicate = identity(predicate)
+    for (var i = fromIdx; i < arr.length; i++) {
+      if (predicate(arr[i])) {
+        return arr[i]
       }
-    })
+    }
 
   }
 
+  function findLast(arr, predicate, fromIdx = arr.length - 1) {
+    var res = []
+    predicate = identity(predicate)
+    for (var i = fromIdx; i >= 0; i--) {
+      if (predicate(arr[i])) {
+        return arr[i]
+      }
+    }
 
-  return (
+  }
+
+  function flatMap(arr, iteratee) {
+    var res = []
+    for (var i = 0; i < arr.length; i++) {
+      res = res.concat(iteratee(arr[i]))
+    }
+    return res
+  }
+
+  function flatMapDeep(arr, iteratee) {
+    var newarr = flatMap(arr, iteratee)
+
+    function fd(arr) {
+      var res = []
+      for (var i = 0; i < arr.length; i++) {
+        if (typeof (arr[i]) !== 'object') {
+          res.push(arr[i])
+        } else {
+          res = res.concat(fd(arr[i]))
+        }
+      }
+      return res
+    }
+    return fd(newarr)
+  }
+
+  function flatMapDepth(arr, iteratee, depth = 1) {
+    return flattenDepth(flatMap(arr, iteratee), depth = 1)
+  }
+
+  function forEach(arr, f) {
+    if (Array.isArray(arr)) {
+      for (var i = 0; i < arr.length; i++) {
+        f(arr[i])
+      }
+    }
+    if (typeof (arr) === 'object') {
+      for (var key in arr) {
+        f(arr[key], key, arr)
+      }
+    }
+    return arr
+  }
+
+  function forEachRight(collection, iteratee) {
+    for (var i = collection.length - 1; i >= 0; i--) {
+      iteratee(collection[i], i, collection)
+    }
+  }
+
+  function groupBy(collection, iteratee) {
+    iteratee = identity(iteratee)
+    var map = {}
+    for (var i = 0; i < collection.length; i++) {
+      var item = iteratee(collection[i])
+      if (item in map) {
+        map[item].push(collection[i])
+      } else {
+        map[item] = [collection[i]]
+      }
+    }
+    return map
+  }
+
+
+  return {
     compact,
     difference,
     differenceBy,
@@ -1251,6 +1336,16 @@ var gaoguoyiwrite = function () {
     zipObjectDeep,
     zipWith,
     countBy,
-    concat
-  )
-}
+    concat,
+    every,
+    filter,
+    find,
+    findLast,
+    flatMap,
+    flatMapDeep,
+    flattenDepth,
+    forEach,
+    forEachRight
+  }
+})()
+
