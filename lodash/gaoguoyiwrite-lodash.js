@@ -1309,11 +1309,6 @@ var gaoguoyiwrite = function () {
     return res
   }
 
-  function orderBy(collection, iteratees, orders) {
-    iteratees = identity(iteratees)
-    var res = []
-
-  }
   function partition(collection, predicate) {
     predicate = identity(predicate)
     var res = [[], []]
@@ -1501,7 +1496,6 @@ var gaoguoyiwrite = function () {
     invokeMap,
     ketBy,
     map,
-    orderBy,
     partition,
     reduce,
     reduceRight,
@@ -1511,7 +1505,7 @@ var gaoguoyiwrite = function () {
     shuffle,
     size,
     some,
-    identity,
+    identity
 
   }
 }()
