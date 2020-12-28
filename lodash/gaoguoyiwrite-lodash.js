@@ -1,21 +1,6 @@
 var gaoguoyiwrite = function () {
 
-  function identity(predicate) {
-    var type = Object.prototype.toString.call(predicate)
-    if (type === '[object Function]') return predicate
-    else if (type === '[object String]') return ((it) => it[predicate])
-    else if (type === '[object Array]') return (it) => it[predicate[0]] == predicate[1]
-    else if (type === '[object Object]') return (it => {
-      for (var key in predicate) {
-        if (predicate[key] !== it[key]) {
-          return false
-          break
-        }
-      }
-      return true
-    })
 
-  }
 
   function compact(ary) {
     var resault = []
@@ -388,7 +373,7 @@ var gaoguoyiwrite = function () {
       if (a !== "object") {
         res.push(array[i])
       } else {
-        res = res.concat(flatMapDeep(array[i]))
+        res = res.concat(flattenDeep(array[i]))
       }
     }
     return res
@@ -1048,19 +1033,16 @@ var gaoguoyiwrite = function () {
     var arr = object.concat(other)
     var map = {}
     for (var i = 0; i < arr.length; i++) {
-      map[arr[i]] = 0
-    }
-    for (var i = 0; i < arr.length; i++) {
-      for (var key in map) {
-        if (comparator(key, arr[i])) {
-          map[key]++
-        }
+      if (arr[i] in map) {
+        map[arr[i]]++
+      } else {
+        map[arr[i]] = 1
       }
     }
     var res = []
-    for (var val in map) {
-      if (map[val] === 1) {
-        res.push(val)
+    for (var key in map) {
+      if (map[key] == 1) {
+        res.push(key)
       }
     }
     return res
@@ -1263,27 +1245,172 @@ var gaoguoyiwrite = function () {
     return map
   }
 
-  // function includes(collection, val, fromIndex = 0) {
-  //   if (Array.isArray(collection)  )
-  //     for (var i = fromIndex; i < collection.length; i++) {
-  //       if (collection[i] === val) {
-  //         return true
-  //       }
-  //     } else if (typeof (collection) == 'object') {
-  //       for (var key in collection) {
-  //         if (collection[key] == val) {
-  //           return true
-  //         }
-  //       }
-  //   } else if (typeof (collection) == 'string') {
-  //     for (var i = fromIndex; i < collection.length; i++){
-  //      re
+  function includes(collection, val, fromIndex = 0) {
+    if (Array.isArray(collection))
+      for (var i = fromIndex; i < collection.length; i++) {
+        if (collection[i] === val) {
+          return true
+        }
+      } else if (typeof (collection) == 'object') {
+        for (var key in collection) {
+          if (collection[key] == val) {
+            return true
+          }
+        }
+      } else if (typeof (collection) == 'string') {
+        var c = 0
+        var max = 0
+        var j = 0
+        for (var i = fromIndex; i < collection.length; i++) {
+          if (collection[i] === val[j]) {
+            j++
+            c++
+            if (c > max) {
+              max = c
+            }
+          } else {
+            j = 0
+            c = 0
+          }
 
-  //       }
-  //     }
-  //     }
-  //   return false
-  // }
+        }
+        return max === val.length
+      }
+    return false
+  }
+
+  function invokeMap(collection, path, ...args) {
+    if (typeof (path) == 'string') {
+      return collection.map(it => it[path](...args))
+    } else if (typeof (path) == 'function') {
+      return collection.map(it => path.call(it, ...args))
+    }
+  }
+
+  function ketBy(collection, iteratee) {
+    iteratee = identity(iteratee)
+    var map = {}
+    collection.forEach(it => {
+      map[iteratee(it)] = it
+    })
+    return map
+  }
+
+  function map(collection, iteratee) {
+    var res = []
+    if (typeof (iteratee) === 'function') {
+      if (Array.isArray(collection)) collection.forEach(it => res.push(iteratee(it)))
+      else if (typeof (collection) === 'object') {
+        for (var key in collection) {
+          res.push(iteratee(collection[key]))
+        }
+      }
+    } else if (typeof (iteratee) === 'string') collection.forEach(it => res.push(it[iteratee]))
+    return res
+  }
+
+  function orderBy(collection, iteratees, orders) {
+    iteratees = identity(iteratees)
+    var res = []
+
+  }
+  function partition(collection, predicate) {
+    predicate = identity(predicate)
+    var res = [[], []]
+    collection.forEach(it => {
+      predicate(it) ? res[0].push(it) : res[1].push(it)
+    })
+    return res
+  }
+  function reduce(collection, iteratee, accumulator = 0) {
+    for (var idx in collection) {
+      accumulator = iteratee(accumulator, collection[idx], idx, collection)
+    }
+    return accumulator
+  }
+
+  function reduceRight(collection, iteratee, accumulator = 0) {
+    for (var i = collection.length - 1; i >= 0; i--) {
+      accumulator = iteratee(accumulator, collection[i], i, collection)
+    }
+    return accumulator
+  }
+
+  function reject(collection, predicate) {
+    predicate = identity(predicate)
+    var res = []
+    for (var i = 0; i < collection.length; i++) {
+      if (!predicate(collection[i])) {
+        res.push(collection[i])
+        break
+      }
+    }
+    return res
+  }
+
+  function sample(arr) {
+    var idx = (Math.random() * arr.length) | 0
+    return arr[idx]
+  }
+
+  function sampleSize(arr, num) {
+    var res = []
+    for (var i = 0; i < num; i++) {
+      var idx = (Math.random() * arr.length) | 0
+      res.push(arr[idx])
+    }
+    return res
+  }
+
+  function shuffle(arr) {
+    var res = []
+    while (arr.length > 1) {
+      var idx = (Math.random() * arr.length) | 0
+      var cut = arr.splice(idx, 1)
+      res = res.concat(cut)
+    }
+    return res.concat(arr)
+  }
+
+  function size(collection) {
+    if (Array.isArray(collection) || typeof (collection) == 'string') {
+      return collection.length
+    } else if (typeof (collection) == 'object') {
+      var c = 0
+      for (var key in collection) {
+        c++
+      }
+      return c
+    }
+  }
+
+  function some(collection, predicate) {
+    predicate = identity(predicate)
+    for (var i = 0; i < collection.length; i++) {
+      if (predicate(collection[i])) {
+        return true
+      }
+    }
+    return false
+  }
+
+  function identity(predicate) {
+    var type = Object.prototype.toString.call(predicate)
+    if (type === '[object Function]') return predicate
+    else if (type === '[object String]') return ((it) => it[predicate])
+    else if (type === '[object Array]') return (it) => it[predicate[0]] == predicate[1]
+    else if (type === '[object Object]') return (it => {
+      for (var key in predicate) {
+        if (predicate[key] !== it[key]) {
+          return false
+          break
+        }
+      }
+      return true
+    })
+
+  }
+
 
 
   return {
@@ -1366,9 +1493,26 @@ var gaoguoyiwrite = function () {
     flatMap,
     flatMapDeep,
     flattenDepth,
+    flatMapDepth,
     forEach,
     forEachRight,
-    groupBy
+    groupBy,
+    includes,
+    invokeMap,
+    ketBy,
+    map,
+    orderBy,
+    partition,
+    reduce,
+    reduceRight,
+    reject,
+    sample,
+    sampleSize,
+    shuffle,
+    size,
+    some,
+    identity,
+
   }
 }()
 
