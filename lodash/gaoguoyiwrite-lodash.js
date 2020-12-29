@@ -1,7 +1,5 @@
 var gaoguoyiwrite = function () {
 
-
-
   function compact(ary) {
     var resault = []
     for (var i = 0; i < ary.length; i++) {
@@ -797,6 +795,7 @@ var gaoguoyiwrite = function () {
     ary.splice(0, 1)
     return ary
   }
+
   function take(ary, n = 1) {
     if (n > ary.length) {
       return ary
