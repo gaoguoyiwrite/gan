@@ -162,7 +162,7 @@ var gaoguoyiwrite = function () {
     return arr
   }
 
-  pullAllWith: function pullAllWith(arr, val, iteratee) {
+  function pullAllWith(arr, val, iteratee) {
     for (var i = 0; i < val.length; i++) {
       for (var j = 0; j < arr.length; j++) {
         if (iteratee(arr[j], val[i])) {
@@ -1068,9 +1068,6 @@ var gaoguoyiwrite = function () {
     return res
   }
 
-  function zipObjectDeep(props, vals) {
-  }
-
   function zipWith(...ary) {
     var iteratee = ary.pop()
 
@@ -1406,7 +1403,59 @@ var gaoguoyiwrite = function () {
 
   }
 
+  function defer(func, ...args) {
+    let time = setTimeout(func, 0, ...args);
+    return times - 1
+  }
 
+  function delay(func, wait, ...args) {
+    let time = setTimeout(func, 0, ...args);
+    return times - 1
+  }
+
+  function castArray(value) {
+    if (Array.isArray(value)) {
+      return value
+    }
+    var res = []
+    for (var i = 0; i < arguments.length; i++) {
+      res.push(arguments[i])
+    }
+    return res
+  }
+
+  function conformsTo(object, source) {
+    for (var key in source) {
+      source[key](object[key])
+    }
+  }
+
+  function eq(value, other) {
+    if (value !== value && other !== other) {
+      return true
+    }
+    return value === other
+  }
+
+  function gt(value, other) {
+    return value > other
+  }
+
+  function gte(value, other) {
+    return value >= other
+  }
+
+  function isArguments(value) {
+    return Object.prototype.toString.call(value) === '[object Arguments]'
+  }
+
+  function isArray(value) {
+    return Object.prototype.toString.call(value) === '[object Array]'
+  }
+
+  function isArrayBuffer(value) {
+    return Object.prototype.toString.call(value) === '[object ArrayBuffer]'
+  }
 
   return {
     compact,
@@ -1477,7 +1526,6 @@ var gaoguoyiwrite = function () {
     xorWith,
     zip,
     zipObject,
-    zipObjectDeep,
     zipWith,
     countBy,
     concat,
@@ -1505,8 +1553,18 @@ var gaoguoyiwrite = function () {
     shuffle,
     size,
     some,
-    identity
-
+    identity,
+    defer,
+    delay,
+    castArray,
+    conformsTo,
+    eq,
+    gt,
+    gte,
+    isArguments,
+    isArguments,
+    isArray,
+    isArrayBuffer,
   }
 }()
 
