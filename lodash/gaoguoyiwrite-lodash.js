@@ -1,3 +1,4 @@
+
 var gaoguoyiwrite = function () {
 
   function compact(ary) {
@@ -1563,7 +1564,7 @@ var gaoguoyiwrite = function () {
     isArguments,
     isArguments,
     isArray,
-    isArrayBuffer,
+    isArrayBuffer
   }
 }()
 
