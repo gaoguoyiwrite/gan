@@ -1667,7 +1667,6 @@ var gaoguoyiwrite = function () {
     forEach,
     forEachRight,
     groupBy,
-    includes,
     invokeMap,
     ketBy,
     map,
