@@ -1248,7 +1248,7 @@ var gaoguoyiwrite = function () {
         if (collection[i] === val) {
           return true
         }
-      } else if (typeof (collection) == 'object') {
+      } else if (typeof (collection) === 'object') {
         for (var key in collection) {
           if (collection[key] == val) {
             return true
@@ -1457,6 +1457,165 @@ var gaoguoyiwrite = function () {
     return Object.prototype.toString.call(value) === '[object ArrayBuffer]'
   }
 
+  function isArrayLike(value) {
+    return (typeof (value) != 'function' && value != null && value.length > 0)
+  }
+
+  function isArrayLikeObject(value) {
+    return (typeof (value) != 'function' && value != null && Object.prototype.toString.call(value) != '[object Object]')
+  }
+  function isBoolean(value) {
+    return Object.prototype.toString.call(value) === '[object Boolean]'
+  }
+
+  function isDate(value) {
+    return Object.prototype.toString.call(date) === '[object Date]'
+  }
+
+  function isElement(value) {
+    return value && typeof (value) === 'object' && value.nodeType === 1 && typeof value.nodeName === 'string'
+  }
+
+  function isEmpty(value) {
+    for (var i in value) {
+      return false
+    }
+    return true
+  }
+
+  function isEqual(value, other) {
+    var typev = Object.prototype.toString.call(value)
+    var typeo = Object.prototype.toString.call(other)
+    if (value !== value && other !== other) {
+      return true
+    } else if (typeof (value, other) === 'string' || typeof (value, other) === 'number') {
+      return value === other
+    } else if (Array.isArray(value) && Array.isArray(other) && value.length == other.length) {
+      for (var i = 0; i < value.length; i++) {
+        if (typeof (value[i]) === 'object' && typeof (other[i]) === 'object') {
+          isEqual(value[i], other[i])
+        } else if (value[i] != other[i]) {
+          return false
+        }
+      }
+      return true
+    } else if (typev === '[object Object]' && typeo === '[object Object]') {
+      for (var i in value) {
+        if (value[i] != other[i]) {
+          return false
+        }
+      }
+      for (var j in other) {
+        if (other[j] != value[j]) {
+          return false
+        }
+      }
+      return true
+    }
+    return false
+  }
+
+  function isEqualWith(value, other, customizer) {
+    for (var i = 0; i < value.length; i++) {
+      if (customizer(value[i], other[i]) == false) {
+        return false
+      }
+    }
+    return true
+  }
+
+  function isError(value) {
+    return Object.prototype.toString.call(value) === '[object Error]'
+  }
+
+  function isFinite(value) {
+    return Number.isFinite(value)
+  }
+
+  function isFunction(value) {
+    return Object.prototype.toString.call(value) == '[object Function]'
+  }
+
+  function isInteger(value) {
+    return Number.isInteger(value)
+  }
+
+  function isLength(value) {
+    return isInteger(value) && value > 0 && value < 2 ** 32 - 1
+  }
+
+  function isMap(value) {
+    return Object.prototype.toString.call(value) === '[object Map]'
+  }
+
+  function isMatch(object, source) {
+    for (var key in source) {
+      if (typeof (object[key]) == 'object' && typeof (source[key]) == 'object') {
+        isMatch(object[key], source[key])
+      } else {
+        return object[key] == source[key]
+      }
+    }
+  }
+
+  function isMatchWith(object, source, customizer) {
+    for (var key in source) {
+      if (customizer(object, source) == false) {
+        return false
+      }
+    }
+    return true
+  }
+
+
+  function isNaN(value) {
+    if (typeof value == 'number' || typeof value == 'object') {
+      var val = value.valueOf()
+      return val !== val
+    }
+    return value != value
+  }
+
+  function isNil(value) {
+    return value === null || value === undefined
+  }
+
+  function isNull(value) {
+    return Object.prototype.toString.call(value) === '[object Null]'
+  }
+
+  function isNumber(value) {
+    return Object.prototype.toString.call(value) === '[object Number]'
+  }
+
+  function isObject(value) {
+    return value !== null
+  }
+
+  function isObjectLike(value) {
+    return (typeof value === 'object' && value !== null)
+  }
+
+  function isPlainObject(value) {
+    var type = Object.prototype.toString.call(value)
+    return type == '[object Object]' || type == null
+  }
+
+  function isRegExp(value) {
+    return Object.prototype.toString.call(value) === '[object RegExp]'
+  }
+
+  function isSafeInteger(value) {
+    return Number.isSafeInteger(value)
+  }
+
+  function isSet(value) {
+    return Object.prototype.toString.call(value) === '[object Set]'
+  }
+
+  function isString(value) {
+    return Object.prototype.toString.call(value) === '[object String]'
+  }
   return {
     compact,
     difference,
@@ -1564,7 +1723,21 @@ var gaoguoyiwrite = function () {
     isArguments,
     isArguments,
     isArray,
-    isArrayBuffer
+    isArrayBuffer,
+    isArrayLike,
+    isArrayLikeObject,
+    isBoolean,
+    isDate,
+    isElement,
+    isEmpty,
+    isEqual,
+    isEqualWith,
+    isError,
+    isFinite,
+    isFunction,
+    isInteger,
+    isLength
+
   }
 }()
 
