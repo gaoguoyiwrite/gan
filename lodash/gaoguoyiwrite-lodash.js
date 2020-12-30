@@ -1242,39 +1242,7 @@ var gaoguoyiwrite = function () {
     return map
   }
 
-  function includes(collection, val, fromIndex = 0) {
-    if (Array.isArray(collection))
-      for (var i = fromIndex; i < collection.length; i++) {
-        if (collection[i] === val) {
-          return true
-        }
-      } else if (typeof (collection) === 'object') {
-        for (var key in collection) {
-          if (collection[key] == val) {
-            return true
-          }
-        }
-      } else if (typeof (collection) == 'string') {
-        var c = 0
-        var max = 0
-        var j = 0
-        for (var i = fromIndex; i < collection.length; i++) {
-          if (collection[i] === val[j]) {
-            j++
-            c++
-            if (c > max) {
-              max = c
-            }
-          } else {
-            j = 0
-            c = 0
-          }
 
-        }
-        return max === val.length
-      }
-    return false
-  }
 
   function invokeMap(collection, path, ...args) {
     if (typeof (path) == 'string') {
