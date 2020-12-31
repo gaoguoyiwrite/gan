@@ -1030,23 +1030,24 @@ var gaoguoyiwrite = function () {
   }
 
   function xorWith(object, other, comparator) {
-    var arr = object.concat(other)
-    var map = {}
-    for (var i = 0; i < arr.length; i++) {
-      if (arr[i] in map) {
-        map[arr[i]]++
-      } else {
-        map[arr[i]] = 1
+    var ary = object.concat(other)
+    let map = new Map()
+    for (let i = 0; i < ary.length; ++i) {
+      for (let j = i + 1; j < ary.length; ++j) {
+        if (comparator(ary[i], ary[j])) {
+          map.set(i, true)
+          map.set(j, true)
+        }
       }
     }
-    var res = []
-    for (var key in map) {
-      if (map[key] == 1) {
-        res.push(key)
-      }
+    let res = []
+    for (let j = 0; j < ary.length; ++j) {
+      if (!map.has(j))
+        res.push(ary[j])
     }
     return res
   }
+
   function zip(...arrays) {
     var res = []
     for (var i = 0; i < arrays[0].length; i++) {
@@ -1226,6 +1227,7 @@ var gaoguoyiwrite = function () {
     for (var i = collection.length - 1; i >= 0; i--) {
       iteratee(collection[i], i, collection)
     }
+    return collection
   }
 
   function groupBy(collection, iteratee) {
@@ -1242,6 +1244,39 @@ var gaoguoyiwrite = function () {
     return map
   }
 
+  function includes(collection, value, fromIndex = 0) {
+    if (Array.isArray(collection)) {
+      for (var i = fromIndex; i < collection.length; i++) {
+        if (collection[i] === value) {
+          return true
+        }
+      }
+    } else if (typeof (collection) === 'object') {
+      for (var key in collection) {
+        if (collection[key] === value) {
+          return true
+        }
+      }
+    } else if (typeof (collection) == 'string') {
+      var c = 0
+      var max = 0
+      var j = 0
+      for (var i = fromIndex; i < collection.length; i++) {
+        if (collection[i] === value[j]) {
+          j++
+          c++
+          if (c > max) {
+            max = c
+          }
+        } else {
+          j = 0
+          c = 0
+        }
+      }
+      return max === value.length
+    }
+    return false
+  }
 
 
   function invokeMap(collection, path, ...args) {
@@ -1252,7 +1287,7 @@ var gaoguoyiwrite = function () {
     }
   }
 
-  function ketBy(collection, iteratee) {
+  function keyBy(collection, iteratee) {
     iteratee = identity(iteratee)
     var map = {}
     collection.forEach(it => {
@@ -1262,15 +1297,25 @@ var gaoguoyiwrite = function () {
   }
 
   function map(collection, iteratee) {
+    iteratee = identity(iteratee)
     var res = []
-    if (typeof (iteratee) === 'function') {
-      if (Array.isArray(collection)) collection.forEach(it => res.push(iteratee(it)))
-      else if (typeof (collection) === 'object') {
-        for (var key in collection) {
-          res.push(iteratee(collection[key]))
+    if (Array.isArray(collection)) {
+      if (!collection.elngth) {
+        return res
+      }
+      for (var i = 0; i < collection.length; i++) {
+        res.push(iteratee(collection[i]))
+      }
+    } else if (typeof collection === 'object') {
+      let keys = Object.keys(collection);
+      if (!keys.length) {
+        return res;
+      } else {
+        for (let key of keys) {
+          res.push(iteratee(collection[key]));
         }
       }
-    } else if (typeof (iteratee) === 'string') collection.forEach(it => res.push(it[iteratee]))
+    }
     return res
   }
 
@@ -1302,7 +1347,7 @@ var gaoguoyiwrite = function () {
     for (var i = 0; i < collection.length; i++) {
       if (!predicate(collection[i])) {
         res.push(collection[i])
-        break
+
       }
     }
     return res
@@ -1372,13 +1417,11 @@ var gaoguoyiwrite = function () {
   }
 
   function defer(func, ...args) {
-    let time = setTimeout(func, 0, ...args);
-    return times - 1
+    return setTimeout(func, 0, ...args) - 1
   }
 
   function delay(func, wait, ...args) {
-    let time = setTimeout(func, 0, ...args);
-    return times - 1
+    return setTimeout(func, wait, ...args) - 1
   }
 
   function castArray(value) {
@@ -1394,7 +1437,7 @@ var gaoguoyiwrite = function () {
 
   function conformsTo(object, source) {
     for (var key in source) {
-      source[key](object[key])
+      return source[key](object[key])
     }
   }
 
@@ -1437,11 +1480,11 @@ var gaoguoyiwrite = function () {
   }
 
   function isDate(value) {
-    return Object.prototype.toString.call(date) === '[object Date]'
+    return Object.prototype.toString.call(value) === '[object Date]'
   }
 
   function isElement(value) {
-    return value && typeof (value) === 'object' && value.nodeType === 1 && typeof value.nodeName === 'string'
+    return value !== null && typeof (value) === 'object' && value.nodeType === 1 && typeof value.nodeName === 'string'
   }
 
   function isEmpty(value) {
@@ -1584,6 +1627,16 @@ var gaoguoyiwrite = function () {
   function isString(value) {
     return Object.prototype.toString.call(value) === '[object String]'
   }
+
+  function isSymbol(value) {
+    return Object.prototype.toString.call(value) == '[object Symbol]'
+  }
+
+  function isTypedArray(value) {
+    return Object.prototype.toString.call(value) == "[object Uint8Array]"
+  }
+
+
   return {
     compact,
     difference,
@@ -1668,7 +1721,8 @@ var gaoguoyiwrite = function () {
     forEachRight,
     groupBy,
     invokeMap,
-    ketBy,
+    keyBy,
+    includes,
     map,
     partition,
     reduce,
@@ -1703,7 +1757,23 @@ var gaoguoyiwrite = function () {
     isFinite,
     isFunction,
     isInteger,
-    isLength
+    isLength,
+    isMap,
+    isMatch,
+    isMatchWith,
+    isNaN,
+    isNil,
+    isNull,
+    isNumber,
+    isObject,
+    isObjectLike,
+    isPlainObject,
+    isRegExp,
+    isSafeInteger,
+    isSet,
+    isString,
+    isSymbol,
+    isTypedArray
 
   }
 }()
