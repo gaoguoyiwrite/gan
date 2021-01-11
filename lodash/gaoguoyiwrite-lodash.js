@@ -644,18 +644,15 @@ var gaoguoyiwrite = function () {
   }
 
   function maxBy(array, predicate) {
-    var num = 0
-    var max = array[0]
+    predicate = myidentity(predicate)
+    var max = []
+    max[0] = array[0]
     for (var i = 1; i < array.length; i++) {
-      var key = predicate(array[i], i, array)
-      if (key in array[i]) {
-        if (array[i][key] > max) {
-          max = array[i][key]
-          num = i
-        }
+      if (predicate(array[i]) > predicate(max[0])) {
+        max[0] = array[i]
       }
     }
-    return array[num]
+    return max
   }
 
   function min(arr) {
@@ -672,17 +669,15 @@ var gaoguoyiwrite = function () {
   }
 
   function minBy(array, key) {
-    var num = 0
-    var min = array[0]
+    predicate = myidentity(predicate)
+    var min = []
+    mmin[0] = array[0]
     for (var i = 1; i < array.length; i++) {
-      if (key in array[i]) {
-        if (array[i][key] < min) {
-          min = array[i][key]
-          num = i
-        }
+      if (predicate(array[i]) < predicate(min[0])) {
+        min[0] = array[i]
       }
     }
-    return array[num]
+    return min
 
   }
 
@@ -695,20 +690,8 @@ var gaoguoyiwrite = function () {
   }
 
   function sumBy(array, predicate) {
-    var sum = 0
-    for (var i = 0; i < array.length; i++) {
-      sum += predicate(array[i], i, array)
-    }
-    return sum
-  }
-
-  function mapValues(obj, mapper) {
-    var resault = {}
-    for (var kry in obj) {
-      var val = obj[key]
-      result[mapper(val, key, obj)] = val
-    }
-    return result
+    predicate = myidentity(predicate)
+    return array.reduce((a, b) => a + predicate(b), 0)
   }
 
   function groupBy(array, predicate) {
@@ -1149,7 +1132,7 @@ var gaoguoyiwrite = function () {
 
   function filter(arr, predicate) {
     var res = []
-    predicate = identity(predicate)
+    predicate = myidentity(predicate)
     for (var i = 0; i < arr.length; i++) {
       if (predicate(arr[i])) {
         res.push(arr[i])
@@ -1160,7 +1143,7 @@ var gaoguoyiwrite = function () {
 
   function find(arr, predicate, fromIdx = 0) {
     var res = []
-    predicate = identity(predicate)
+    predicate = myidentity(predicate)
     for (var i = fromIdx; i < arr.length; i++) {
       if (predicate(arr[i])) {
         return arr[i]
@@ -1171,7 +1154,7 @@ var gaoguoyiwrite = function () {
 
   function findLast(arr, predicate, fromIdx = arr.length - 1) {
     var res = []
-    predicate = identity(predicate)
+    predicate = myidentity(predicate)
     for (var i = fromIdx; i >= 0; i--) {
       if (predicate(arr[i])) {
         return arr[i]
@@ -1231,7 +1214,7 @@ var gaoguoyiwrite = function () {
   }
 
   function groupBy(collection, iteratee) {
-    iteratee = identity(iteratee)
+    iteratee = myidentity(iteratee)
     var map = {}
     for (var i = 0; i < collection.length; i++) {
       var item = iteratee(collection[i])
@@ -1288,7 +1271,7 @@ var gaoguoyiwrite = function () {
   }
 
   function keyBy(collection, iteratee) {
-    iteratee = identity(iteratee)
+    iteratee = myidentity(iteratee)
     var map = {}
     collection.forEach(it => {
       map[iteratee(it)] = it
@@ -1297,12 +1280,9 @@ var gaoguoyiwrite = function () {
   }
 
   function map(collection, iteratee) {
-    iteratee = identity(iteratee)
+    iteratee = myidentity(iteratee)
     var res = []
     if (Array.isArray(collection)) {
-      if (!collection.elngth) {
-        return res
-      }
       for (var i = 0; i < collection.length; i++) {
         res.push(iteratee(collection[i]))
       }
@@ -1320,7 +1300,7 @@ var gaoguoyiwrite = function () {
   }
 
   function partition(collection, predicate) {
-    predicate = identity(predicate)
+    predicate = myidentity(predicate)
     var res = [[], []]
     collection.forEach(it => {
       predicate(it) ? res[0].push(it) : res[1].push(it)
@@ -1342,7 +1322,7 @@ var gaoguoyiwrite = function () {
   }
 
   function reject(collection, predicate) {
-    predicate = identity(predicate)
+    predicate = myidentity(predicate)
     var res = []
     for (var i = 0; i < collection.length; i++) {
       if (!predicate(collection[i])) {
@@ -1390,7 +1370,7 @@ var gaoguoyiwrite = function () {
   }
 
   function some(collection, predicate) {
-    predicate = identity(predicate)
+    predicate = myidentity(predicate)
     for (var i = 0; i < collection.length; i++) {
       if (predicate(collection[i])) {
         return true
@@ -1399,7 +1379,7 @@ var gaoguoyiwrite = function () {
     return false
   }
 
-  function identity(predicate) {
+  function myidentity(predicate) {
     var type = Object.prototype.toString.call(predicate)
     if (type === '[object Function]') return predicate
     else if (type === '[object String]') return ((it) => it[predicate])
@@ -1562,7 +1542,7 @@ var gaoguoyiwrite = function () {
   function isMatch(object, source) {
     for (var key in source) {
       if (typeof (object[key]) == 'object' && typeof (source[key]) == 'object') {
-        isMatch(object[key], source[key])
+        return isMatch(object[key], source[key])
       } else {
         return object[key] == source[key]
       }
@@ -1608,8 +1588,7 @@ var gaoguoyiwrite = function () {
   }
 
   function isPlainObject(value) {
-    var type = Object.prototype.toString.call(value)
-    return type == '[object Object]' || type == null
+    return value._proto_ == Object.prototype || value._proto_ == null
   }
 
   function isRegExp(value) {
@@ -1636,6 +1615,913 @@ var gaoguoyiwrite = function () {
     return Object.prototype.toString.call(value) == "[object Uint8Array]"
   }
 
+  function isUndefined(value) {
+    return Object.prototype.toString.call(value) === "[object Undefined]"
+  }
+  function isWeakMap(value) {
+    return Object.prototype.toString.call(value) === "[object WeakMap]"
+  }
+
+  function isWeakSet(value) {
+    return Object.prototype.toString.call(value) == '[new WeakSet]'
+  }
+
+  function lt(value, other) {
+    return value < other
+  }
+
+  function lte(value, other) {
+    return value <= other
+  }
+
+  function toArray(value) {
+    var res = []
+    if (Array.isArray(value)) {
+      return value
+    } else if (typeof (value) == 'string') {
+      return value.split()
+    } else if (typeof (value) == 'object') {
+      for (var key in value) {
+        res.push(value[key])
+      }
+    }
+    return res
+  }
+
+  function toFinite(value) {
+    if (typeof value == 'string') {
+      return Number(value)
+    } else {
+      if (value <= Number.MIN_VALUE) {
+        return Number.MIN_VALUE
+      } else if (value >= Number.MAX_VALUE) {
+        return Number.MAX_VALUE
+      } else {
+        return value
+      }
+    }
+  }
+
+  function toInteger(value) {
+    if (value < 1) {
+      return 0
+    } else if (value > Number.MAX_VALUE) {
+      return Number.MAX_VALUE
+    } else {
+      return parseInt(value)
+    }
+  }
+
+  function toLength(value) {
+    if (value < 1) {
+      return 0
+    } else if (value > Number.MAX_VALUE) {
+      return 2 ** 32 - 1
+    } else {
+      return parseInt(value)
+    }
+
+  }
+
+  function toNumber(value) {
+    return Number(value)
+  }
+
+  function assign(object, ...sources) {
+    for (var i = 0; i < sources.length; i++) {
+      for (let key of Object.keys(sources[i])) {
+        object[key] = sources[i][key]
+      }
+    }
+    return object
+  }
+
+  function toSafeInteger(value) {
+    if (value > Number.MAX_SAFE_INTEGER) {
+      return Number.MAX_SAFE_INTEGER
+    } else if (value < 1) {
+      return 0
+    } else {
+      return parseInt(value)
+    }
+  }
+
+  function add(augend, addend) {
+    return augend + addend
+  }
+
+  function ceil(number, precision = 0) {
+    return Math.ceil(number * (10 ** precision)) / (10 ** precision)
+  }
+
+  function divide(dividend, divisor) {
+    return dividend / divisor
+  }
+
+  function floor(number, precision = 0) {
+    return Math.floor(number * (10 ** precision)) / (10 ** precision)
+  }
+
+  function mean(array) {
+    return sum(array) / array.length
+  }
+
+  function meanBy(array, iteratee) {
+    return sumBy(array, iteratee) / array.length
+  }
+
+  function multiply(multiplier, multiplicand) {
+    return multiplier * multiplicand
+  }
+
+  function round(number, precision = 0) {
+    return Math.round(number * (10 ** precision)) / (10 ** precision)
+  }
+
+  function subtract(minuend, subtrahend) {
+    return minuend - subtrahend
+  }
+
+  function clamp(number, lower, upper) {
+    if (number < lower) {
+      return lower
+    } else if (number > upper) {
+      return upper
+    }
+  }
+
+  function inRange(number, start, end) {
+    if (arguments.length == 2) {
+      return (number >= 0 && number < start)
+    } else {
+      if (start > end) {
+        return (number >= end && number < start)
+      } else {
+        return (number >= start && number < end)
+      }
+    }
+  }
+
+  function random(lower = 0, upper = 1, isfloating = false) {
+    if (arguments.length === 1) {
+      return parseInt(Math.random() * lower)
+    } else if (arguments.length == 2) {
+      if (typeof arguments[1] == 'number') {
+        return parseInt(Math.random() * (uper - lower) + lower)
+      } else if (typeof arguments[1] == 'boolean') {
+        if (arguments[1] == true) {
+          return Math.random() * lower
+        } else {
+          return parseInt(Math.random() * lower)
+        }
+      }
+    } else if (arguments.length == 2) {
+      if (isfloating == true) {
+        return (Math.random() * (uper - lower) + lower)
+      } else {
+        return parseInt(Math.random() * (uper - lower) + lower)
+      }
+    }
+  }
+
+  function assignIn(object, ...sources) {
+    sources.forEach(it => {
+      for (var key in it) {
+        object[key] = it[key]
+      }
+    })
+    return object
+  }
+
+  function at(object, paths) {
+    var res = []
+    var reg = /[\w]/g
+    for (var i = 0; i < paths.length; i++) {
+      var ary = paths[i].match(reg)
+      var tmp = object
+      for (var j = 0; j < ary.length; j++) {
+        tmp = tmp[ary[j]]
+      }
+      res.push(tmp)
+    }
+    return res
+  }
+
+  function defaults(object, ...sources) {
+    var map = {}
+    for (var key in obj) {
+      map[key] = obj[key]
+    }
+    for (var inner of source) {
+      for (var key in inner) {
+        if (!map[key]) {
+          map[key] = obj[key]
+        }
+      }
+    }
+    return map
+
+  }
+
+  function defaultsDeep(object, ...sources) {
+
+  }
+
+  function findKey(object, predicate) {
+    predicate = myidentity(predicate)
+    for (let key of Object.keys(object)) {
+      if (predicate(object[key])) {
+        return key
+      }
+    }
+  }
+
+  function findLastKey(object, predicate) {
+    predicate = myidentity(predicate)
+    for (let key of Object.keys(object).reverse()) {
+      if (predicate(object[key])) {
+        return key
+      }
+    }
+  }
+
+  function forIn(object, iteratee) {
+    for (var key in object) {
+      iteratee(object[key], key, object)
+    }
+    return object
+  }
+
+  function forInRight(object, iteratee) {
+    for (var key in object) {
+      iteratee(object[key], key, object)
+    }
+    return object
+  }
+
+  function forOwn(object, iteratee) {
+    for (var key of Object.keys(object)) {
+      iteratee(object[key], key, object)
+    }
+    return object
+  }
+
+  function forOwnRight(object, iteratee) {
+    for (var key of Object.keys(object).reverse()) {
+      iteratee(object[key], key, object)
+    }
+    return object
+  }
+
+  function functions(object) {
+    var res = []
+    var arr = Object.keys(object)
+    for (var i = 0; i < arr.length; i++) {
+      if (typeof (arr[i]) === 'function')
+        res.push(arr[i])
+    }
+    return res
+  }
+
+  function functionsIn(object) {
+    var res = []
+    for (var key in object) {
+      res.push(key)
+    }
+    return res
+  }
+
+  function get(object, path, defaultValue) {
+    if (typeof path == 'string') {
+      var reg = /[\w]/g
+      var path = path.match(reg)
+    }
+    var tmp = object
+    for (var i = 0; i < path.length; i++) {
+      tmp = tmp[path[i]]
+      if (tmp == undefined) {
+        return defaultValue
+      }
+    }
+    return tmp
+  }
+
+  function has(object, path) {
+    if (typeof path == 'string') {
+      var reg = /[\w]/g
+      var path = path.match(reg)
+    }
+    var tmp = object
+    for (var i = 0; i < path.length; i++) {
+      if (tmp[path[i]] == undefined) {
+        return false
+      }
+      tmp = tmp[path[i]]
+    }
+    return true
+  }
+
+  function hasIn(object, path) {
+    if (typeof path == 'string') {
+      var reg = /[\w]/g
+      var path = path.match(reg)
+    }
+    var tmp = object
+    for (var i = 0; i < path.length; i++) {
+      if (tmp[path[i]] == undefined) {
+        return false
+      }
+      tmp = tmp[path[i]]
+    }
+    return true
+  }
+
+  function invert(object) {
+    var map = {}
+    for (var key in object) {
+      map[object[key]] = key
+    }
+    return map
+  }
+
+  function invertBy(object, iteratee) {
+    var map = {}
+    if (arguments.length == 1) {
+      for (var key in object) {
+        if (!map[object[key]]) {
+          map[object[key]] = [key]
+        } else {
+          map[object[key]].push(key)
+        }
+      }
+    }
+    if (arguments.length == 2) {
+      for (var key in object) {
+        var it = iteratee(object[key])
+        if (!map[it]) {
+          map[it] = [key]
+        } else {
+          map[it].push(key)
+        }
+      }
+    }
+    return map
+  }
+
+  function invoke(object, path, ...args) {
+    var reg = /\[|\.|\]/g
+    path = path.split(reg)
+    fnc = path.pop()
+    for (var i = 0; i < path.length; i++) {
+      object = object[path[i]]
+    }
+    return object.fnc(...args)
+  }
+
+  function keys(object) {
+    var res = []
+    for (var key of Object.keys(object)) {
+      res.push(key)
+    }
+    return res
+  }
+
+  function keysIn(object) {
+    var res = []
+    for (var key in object) {
+      res.push(key)
+    }
+    return res
+  }
+
+  function mapKeys(object, iteratee) {
+    var map = {}
+    for (var key in object) {
+      map[iteratee(object[k], key)] = object[key]
+    }
+    return map
+  }
+
+  function mapValues(object, iteratee) {
+    var map = {}
+    if (typeof iteratee == 'function') {
+      for (var key in object) {
+        map[key] = iteratee(object[key])
+      }
+    }
+    if (typeof iteratee == 'string') {
+      for (var key in object) {
+        map[key] = object[key][iteratee]
+      }
+    }
+    return map
+
+  }
+
+  function merge(object, sources) {
+    var map = {}
+    for (var key in object) {
+      if (object[key] == undefined) {
+        continue
+      }
+      map[key] = []
+      for (var i = 0; i < object[key].length; i++) {
+        var item1 = object[key][i]
+        var item2 = sources[key][i]
+        map[key].push({ item1, item2 })
+      }
+    }
+    return map
+  }
+
+  function omit(object, props) {
+    var map = {}
+    for (var key in object) {
+      if (props.includes(key)) {
+        continue
+      } else {
+        map[key] = object[key]
+      }
+    }
+    return map
+  }
+
+  function omitBy(object, predicate) {
+    var map = {}
+    for (var key in object) {
+      if (predicate(object[key])) {
+        continue
+      } else {
+        map[key] = object[key]
+      }
+    }
+    return map
+  }
+
+  function pick(object, props) {
+    var map = {}
+    for (var key in object) {
+      if (props.includes(key)) {
+        map[key] = object[key]
+      }
+    }
+    return map
+  }
+
+  function pickBy(object, predicate) {
+    var map = {}
+    for (var key in object) {
+      if (predicate(object[key])) {
+        map[key] = object[key]
+      }
+    }
+    return map
+  }
+
+  function result(object, path, defaultValue) {
+    var reg = /\w+/g
+    path = path.match(reg)
+    for (var i = 0; i < path.length; i++) {
+      object = object[path[i]]
+      if (object == undefined) {
+        return defaultValue
+      }
+    }
+    return object
+  }
+
+  function set(object, path, value) {
+    if (typeof path == 'string') {
+      path = path.match(/\w+/g)
+    }
+    var tmp = object
+    for (var i = 0; i < path.length - 1; i++) {
+      if (tmp[path[i]] == undefined) {
+        if (typeof path[i] == 'string') {
+          tmp[path[i]] = {}
+        } else if (typeof path[i] == 'number') {
+          tmp[path[i]] = []
+        }
+      }
+      tmp = tmp[path[i]]
+    }
+    tmp[path[i]] = value
+    return object
+  }
+
+  function setWith(object, path, value, customizer) {
+    if (typeof path == 'string') {
+      path = path.match(/\w+/g)
+    }
+    var tmp = object
+    for (var i = 0; i < path.length - 1; i++) {
+      if (tmp[path[i]] == undefined) {
+        tmp[path[i]] = {}
+      }
+      tmp = tmp[path[i]]
+    }
+    tmp[path[i]] = customizer(value, path[i], temp)
+    return object
+  }
+
+  function toPairs(object) {
+    var res = []
+    for (var key of Object.keys(object)) {
+      res.push([key, object[key]])
+    }
+    return res
+  }
+
+
+  function toPairsIn(object) {
+    var res = []
+    for (var key in object) {
+      res.push([key, object[key]])
+    }
+    return res
+  }
+
+  function transform(object, iteratee, accumulator) {
+
+  }
+
+  function unset(object, path) {
+    if (typeof path == 'string') {
+      path = path.match(/\w+/g)
+    }
+    var tmp = object
+    for (var i = 0; i < path.length - 2; i++) {
+      tmp = tmp[path[i]]
+    }
+    if (tmp[path[i]]) {
+      tmp[path[i]] = {}
+      return true
+    } else {
+      return false
+    }
+  }
+
+  function update(object, path, updater) {
+    if (typeof path == 'string') {
+      path = path.match(/\w+/g)
+    }
+    var tmp = object
+    for (var i = 0; i < path.length - 1; i++) {
+      if (tmp[path[i]] == undefined) {
+        if (typeof path[i] == 'string') {
+          tmp[path[i]] = {}
+        } else if (typeof path[i] == 'number') {
+          tmp[path[i]] = []
+        }
+      }
+      tmp = tmp[path[i]]
+    }
+    tmp[path[i]] = updater(tmp[path[i]])
+    return object
+  }
+
+  function updateWith(object, path, updater, customizer) {
+    if (typeof path == 'string') {
+      path = path.match(/\w+/g)
+    }
+    var tmp = object
+    for (var i = 0; i < path.length - 1; i++) {
+      if (tmp[path[i]] == undefined) {
+        tmp[path[i]] = customizer(path[i], path[i], object)
+      }
+      tmp = tmp[path[i]]
+    }
+    tmp[path[i]] = updater(tmp[path[i]])
+    return object
+  }
+
+  function values(object) {
+    var res = []
+    for (var key of Object.keys(object)) {
+      res.push(object[key])
+    }
+    return res
+  }
+
+  function valuesIn(object) {
+    var res = []
+    for (var key in object) {
+      res.push(object[key])
+    }
+    return res
+  }
+
+  function camelCase(string) {
+    string = string.toLowerCase()
+    var ary = string.match(/[a-z]+/g)
+    var str = ary[0]
+    for (var i = 1; i < ary.length; i++) {
+      str += ary[i][0].toUpperCase()
+      for (var j = 1; j < ary[i].length; j++)
+        str += ary[i][j]
+    }
+    return str
+  }
+
+  function capitalize(string) {
+    var res = string[0]
+    for (var i = 1; i < string.length; i++) {
+      res += string[i].toLowerCase()
+    }
+    return res
+  }
+
+  function endsWith(string, target, position = string.length) {
+    for (var i = string.length - 1; i >= 0; i--) {
+      if (string[i] === target && i + 1 === position) {
+        return true
+      }
+    }
+    return false
+  }
+
+  function escape(string) {
+    return string.replace(/[\&\>\<\"\']/g, match => {
+      switch (match) {
+        case "&":
+          return '&amp;'
+        case '"':
+          return '&quot';
+        case "'":
+          return '&apos;';
+        case '<':
+          return '&lt;';
+        case '>':
+          return '&gt';
+        default:
+          return match;
+      }
+    });
+  }
+
+  function escapeRegExp(string = '') {
+    return string.replace(/[\^\$\s\.\*\+\?\(\)\[\]\,\|]/g, '\\$&')
+  }
+
+  function kebabCase(string = '') {
+    return string.match(/[a-z]+|[a-zA-Z]+/g).join('-').toLowerCase()
+  }
+
+  function lowerCase(string = '') {
+    return string.match(/[a-z]+|[a-zA-Z]+/g).join(' ').toLowerCase()
+  }
+
+  function lowerFirst(string = '') {
+    return string.replace(/\w/, (it) => it.toLowerCase())
+  }
+
+  function pad(string = '', length = 0, chars = ' ') {
+    if (string.length >= length) {
+      return string
+    }
+    var n = length - string.length
+    var l = chars.length
+    if (n % 2 == 0) {
+      var str1 = chars.repeat(Math.ceil(n / 2 / l)).slice(0, n / 2)
+      var str2 = str1
+    } else {
+      str2 = chars.repeat(Math.ceil(n / 2 / l)).slice(0, Math.ceil(n / 2))
+      str1 = str2.slice(0, -1)
+    }
+    return str1 + string + str2
+  }
+
+  function padEnd(string = '', length = 0, chars = ' ') {
+    if (string.length >= length) {
+      return string
+    }
+    var n = length - string.length
+    var l = chars.length
+    if (l === 1) {
+      return string + chars.repeat(n)
+    } else {
+      return string + chars.repeat(Math.ceil(n / 2)).slice(0, n)
+    }
+  }
+
+  function padStart(string = '', length = 0, chars = ' ') {
+    if (string.length >= length) {
+      return string
+    }
+    var n = length - string.length
+    var l = chars.length
+    if (l === 1) {
+      return chars.repeat(n) + string
+    } else {
+      return chars.repeat(Math.ceil(n / 2)).slice(0, n) + string
+    }
+  }
+
+  function parseInt(string, radix = 10) {
+    return parseInt(string, radix)
+  }
+
+  function repeat(string = '', n = 1) {
+    var res = ''
+    for (var i = 0; i < n; i++) {
+      res += string
+    }
+    return res
+  }
+
+  function replace(string = '', pattern, replacement) {
+    return str.replace(pattern, replacement)
+  }
+
+  function snakeCase(string = '') {
+    return string.match(/[a-z]+|[a-zA-Z]+/g).join('_').toLowerCase()
+  }
+
+  function split(string = '', separator, limit) {
+    var res = string.split(separator)
+    return res.slice(0, limit)
+  }
+
+  function startCase(string = '') {
+    return string.match(/[a-z]+|[a-zA-Z]+/g).map(it => it.replace(/\w/, (it) => it.toUpperCase())).join(' ')
+  }
+
+  function startsWith(string = '', target, position = 0) {
+    return string[position] == target
+  }
+
+  function toLower(string = '') {
+    return string.toLowerCase()
+  }
+
+  function toUpper(string = '') {
+    return string.toUpperCase()
+  }
+
+  function trim(string = '', chars) {
+    if (arguments.length == 1) {
+      return string.replace(/[\s]+/g, '')
+    }
+    var reg = new RegExp('[' + chars + ']+', 'g')
+    return string.replace(reg, '')
+  }
+
+
+  function trimEnd(str, char = "\\s") {
+    let reg = new RegExp("[" + char + "]+$")
+    return str.replace(reg, "")
+  }
+
+  function trimStart(str, char = "\\s") {
+    let reg = new RegExp("[" + char + "]+")
+    return str.replace(reg, "")
+  }
+
+  function truncate(string = '', options = {}) {
+    if (options[length] == undefined) options[length] = 30
+    if (options[omission] == undefined) options[omission] = '...'
+    options[separator] = ''
+
+  }
+
+  function unescape(string = '') {
+    if (string.includes("&amp;")) {
+      string = string.replace("&amp;", "&")
+    }
+    if (string.includes("&lt;")) {
+      string = string.replace("&lt;", "<")
+    }
+    if (string.includes("&gt;")) {
+      string = string.replace("&gt;", ">")
+    }
+    if (string.includes("&quot;")) {
+      string = string.replace("&quot;", '"')
+    }
+    if (string.includes("&#39;")) {
+      string = string.replace("&#39;", "'")
+    }
+    return string
+  }
+
+  function upperCase(string = '') {
+    return string.match(/[a-z]+|[a-zA-Z]+/g).join(' ').toUpperCase()
+  }
+
+  function upperFirst(string = '') {
+    return string.replace(/\w/, match => match.toUpperCase())
+  }
+
+  function words(string = '', pattern = /\w+/g) {
+    return string.match(pattern)
+  }
+
+  function defaultTo(value, defaultValue) {
+    if (value == undefined || value == null || value != value) {
+      return defaultValue
+    } else {
+      return value
+    }
+  }
+
+  function range(start = 0, end, step = 1) {
+    var res = []
+    if (arguments.length == 1) {
+      if (start > 0) {
+        for (var i = 0; i)
+      }
+    }
+  }
+
+
+  // json解析器()
+  function parsejson(str) {
+    var i = 0
+    return parseValue()
+    function parseValue() {
+      var char = str[i]
+      if (char == '[') {
+        return parseArray()
+      }
+      if (char == '{') {
+        return parseObject()
+      }
+      if (char == '"') {
+        return parseString()
+      }
+      if (char == 't') {
+        return parseTrue()
+      }
+      if (char == 'f') {
+        return parseFalse()
+      }
+      if (char == 'n') {
+        return parseNull()
+      }
+      return parseNumber()
+    }
+    function parseArray() {
+      var res = []
+      i++
+      while (str[i] == ']') {
+        if (str[i] == ',') {
+          i++
+        }
+        var val = parseValue(str[i])
+        res.push(val)
+      }
+      i++
+      return res
+    }
+
+    function parseObject() {
+      var obj = {}
+      i++ //skip'{'
+      while (str[i] != '}') {
+        if (str[i] == ',') {
+          i++
+        }
+        var key = parseValue()
+        i++
+        var value = parseValue()
+        obj[key] = value
+      }
+      i++
+      return obj
+    }
+
+    function parseString() {
+      var res = ''
+      i++
+      while (str[i] !== '"') {
+        res = res + str[i++]
+      }
+      i++
+      return res
+    }
+
+    function parseTrue() {
+      i += 4
+      return true
+    }
+
+    function parseFalse() {
+      i += 5
+      return false
+    }
+
+    function parseNull() {
+      i += 4
+      return null
+    }
+
+    function parseNumber() {
+      var numStr = ''
+      while (/[\d+\-.]/.test(str[i])) {
+        numStr += str[i++]
+      }
+      return parseFloat(numStr)
+    }
+  }
 
   return {
     compact,
@@ -1682,7 +2568,7 @@ var gaoguoyiwrite = function () {
     minBy,
     sum,
     sumBy,
-    mapValues,
+
     groupBy,
     sortedIndexOf,
     sortedLastIndex,
@@ -1733,7 +2619,6 @@ var gaoguoyiwrite = function () {
     shuffle,
     size,
     some,
-    identity,
     defer,
     delay,
     castArray,
@@ -1773,8 +2658,35 @@ var gaoguoyiwrite = function () {
     isSet,
     isString,
     isSymbol,
-    isTypedArray
-
+    isTypedArray,
+    isUndefined,
+    isWeakMap,
+    isWeakSet,
+    lt,
+    lte,
+    toFinite,
+    toInteger,
+    toLength,
+    toNumber,
+    assign,
+    toSafeInteger,
+    add,
+    ceil,
+    divide,
+    floor,
+    mean,
+    meanBy,
+    multiply,
+    round,
+    subtract,
+    clamp,
+    inRange,
+    random,
+    assignIn,
+    at,
+    defaults,
+    findKey,
+    parsejson
   }
 }()
 
