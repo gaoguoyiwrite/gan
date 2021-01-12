@@ -2423,14 +2423,7 @@ var gaoguoyiwrite = function () {
     }
   }
 
-  function range(start = 0, end, step = 1) {
-    var res = []
-    if (arguments.length == 1) {
-      if (start > 0) {
-        for (var i = 0; i)
-      }
-    }
-  }
+
 
 
   // json解析器()
@@ -2686,7 +2679,71 @@ var gaoguoyiwrite = function () {
     at,
     defaults,
     findKey,
-    parsejson
+    parsejson,
+    defaultsDeep,
+    findLastKey,
+    forIn,
+    forInRight,
+    forOwn,
+    forOwnRight,
+    functions,
+    functionsIn,
+    get,
+    has,
+    hasIn,
+    invert,
+    invertBy,
+    invoke,
+    keys,
+    keysIn,
+    mapKeys,
+    mapValues,
+    merge,
+    omit,
+    omitBy,
+    pick,
+    pickBy,
+    result,
+    set,
+    setWith,
+    toPairs,
+    toPairsIn,
+    transform,
+    valuesIn,
+    unset,
+    update,
+    updateWith,
+    values,
+    camelCase,
+    capitalize,
+    endsWith,
+    escape,
+    escapeRegExp,
+    kebabCase,
+    lowerCase,
+    lowerFirst,
+    pad,
+    padEnd,
+    padStart,
+    parseInt,
+    repeat,
+    replace,
+    snakeCase,
+    split,
+    startCase,
+    startsWith,
+    toLower,
+    toUpper,
+    trim,
+    trimEnd,
+    trimStart,
+    truncate,
+    unescape,
+    upperCase,
+    upperFirst,
+    words,
+    defaultTo,
+    range,
   }
 }()
 
